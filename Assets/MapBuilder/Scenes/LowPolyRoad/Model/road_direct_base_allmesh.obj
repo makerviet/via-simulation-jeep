@@ -1,0 +1,52 @@
+g main_board
+
+v 0 0 1
+v 0 0 0
+v -1 0 0
+v -1 0 1
+
+s off
+f  1 2 3 4
+
+g border
+
+
+# v border part border_left
+v 0 0 0
+v 0 0 1
+#up
+v 0 0.1 0
+v 0 0.1 1
+
+v 0.045 0.1 1
+v 0.045 0.1 0
+#down
+v 0.045 0 1
+v 0.045 0 0
+
+
+# v border part border_right
+v -1 0 1
+v -1 0 0
+#up
+v -1 0.1 1
+v -1 0.1 0
+
+v -1.045 0.1 0
+v -1.045 0.1 1
+#down
+v -1.045 0 0
+v -1.045 0 1
+
+
+s off
+#
+ plane part border_left
+f 5 6 8 7
+f 7 8 9 10
+f 11 12 10 9
+#
+ plane part border_right
+f 13 14 16 15
+f 15 16 17 18
+f 19 20 18 17

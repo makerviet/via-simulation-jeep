@@ -1,0 +1,9 @@
+g main_board
+
+v 0 0 1
+v 0 0 0
+v -1 0 0
+v -1 0 1
+
+s off
+f  1 2 3 4
