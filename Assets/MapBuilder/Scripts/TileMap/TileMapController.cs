@@ -103,13 +103,19 @@ public class TileMapController : MonoBehaviour
         genMapButton.onClick.AddListener(OnGenMapClicked);
         goButton.onClick.AddListener(() =>
         {
-            SceneManager.LoadScene("DesignMapAutonomous");
+            if (OnSaveMapClicked())
+            {
+                SceneManager.LoadScene("DesignMapAutonomous");
+            }
         });
 
         carSelectButton.onClick.AddListener(OnCarSelected);
         loadMapButton.onClick.AddListener(OnLoadMapClicked);
         saveAsButton.onClick.AddListener(OnSaveAsClicked);
-        saveMapButton.onClick.AddListener(OnSaveMapClicked);
+        saveMapButton.onClick.AddListener(() =>
+        {
+            OnSaveMapClicked();
+        });
     }
 
     void OnMapBgChanged(int id)
@@ -204,16 +210,18 @@ public class TileMapController : MonoBehaviour
         BrowseMapPopup.OpenPopup(DoSaveMap);
     }
 
-    void OnSaveMapClicked()
+    bool OnSaveMapClicked()
     {
         if (string.IsNullOrEmpty(currentMapName))
         {
             //TextInputPopup.OpenPopup(DoSaveMap);
             BrowseMapPopup.OpenPopup(DoSaveMap);
+            return false;
         }
         else
         {
             DoSaveMap(currentMapName);
+            return true;
         }
     }
 
