@@ -4015,6 +4015,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c52e315dccff44f30a1038297d33a20a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &581243076 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3512102421677352828, guid: 7d2c9378d753b4199914d240c4c8f432,
+    type: 3}
+  m_PrefabInstance: {fileID: 581243072}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ea65b38d485c374caa584a03f1de571, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &588075291
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4540,18 +4552,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 315042367}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &671308617 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 11400002, guid: 0e7ee4df08df88c4880f43398f9ad2c2,
-    type: 3}
-  m_PrefabInstance: {fileID: 76698559}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3ea65b38d485c374caa584a03f1de571, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &673836679
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11348,7 +11348,7 @@ PrefabInstance:
         type: 3}
       propertyPath: carController
       value: 
-      objectReference: {fileID: 671308617}
+      objectReference: {fileID: 581243076}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 96664f82c8df0114a92fe864c83a9a48, type: 3}
 --- !u!114 &1909783481 stripped
