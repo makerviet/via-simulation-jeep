@@ -59,12 +59,17 @@ public class CommandServer : MonoBehaviour
 		UnityMainThreadDispatcher.Instance().Enqueue(() =>
 		{
 			print("Attempting to Send...");
-			// send only if it's not being manually driven
 			if ((Input.GetKey(KeyCode.W)) || (Input.GetKey(KeyCode.S))) {
-				_socket.Emit("telemetry", new JSONObject());
+				// Manual mode
+				Dictionary<string, string> data = new Dictionary<string, string>();
+				data["steering_angle"] = _carController.CurrentSteerAngle.ToString("N4");
+				data["throttle"] = _carController.AccelInput.ToString("N4");
+				data["speed"] = _carController.CurrentSpeed.ToString("N4");
+				data["image"] = Convert.ToBase64String(CameraHelper.CaptureFrame(FrontFacingCamera));
+				_socket.Emit("telemetry", new JSONObject(data));
 			}
 			else {
-				// Collect Data from the Car
+				// Autonomous mode
 				Dictionary<string, string> data = new Dictionary<string, string>();
 				data["steering_angle"] = _carController.CurrentSteerAngle.ToString("N4");
 				data["throttle"] = _carController.AccelInput.ToString("N4");
@@ -73,27 +78,5 @@ public class CommandServer : MonoBehaviour
 				_socket.Emit("telemetry", new JSONObject(data));
 			}
 		});
-
-		//    UnityMainThreadDispatcher.Instance().Enqueue(() =>
-		//    {
-		//      	
-		//      
-		//
-		//		// send only if it's not being manually driven
-		//		if ((Input.GetKey(KeyCode.W)) || (Input.GetKey(KeyCode.S))) {
-		//			_socket.Emit("telemetry", new JSONObject());
-		//		}
-		//		else {
-		//			// Collect Data from the Car
-		//			Dictionary<string, string> data = new Dictionary<string, string>();
-		//			data["steering_angle"] = _carController.CurrentSteerAngle.ToString("N4");
-		//			data["throttle"] = _carController.AccelInput.ToString("N4");
-		//			data["speed"] = _carController.CurrentSpeed.ToString("N4");
-		//			data["image"] = Convert.ToBase64String(CameraHelper.CaptureFrame(FrontFacingCamera));
-		//			_socket.Emit("telemetry", new JSONObject(data));
-		//		}
-		//      
-		////      
-		//    });
 	}
 }
