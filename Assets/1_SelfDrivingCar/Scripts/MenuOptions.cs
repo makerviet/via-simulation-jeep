@@ -37,14 +37,19 @@ public class MenuOptions : MonoBehaviour
 
     public void StartAutonomousMode()
     {
-        BrowseMapPopup.OpenPopup((map_name) =>
+        BrowseMapPopup.OpenPopup((map_name, isDefaultMap) =>
         {
             if (!string.IsNullOrEmpty(map_name))
             {
-                MapDataLoader.SetInstanceMapData(MapDataLoader.DataOfMap(map_name));
+                Texture mapTexture = null;
+                if (isDefaultMap)
+                {
+                    mapTexture = MapDataLoader.TextureOfDefaultMap(map_name);
+                }
+                MapDataLoader.SetInstanceMapData(MapDataLoader.DataOfMap(map_name, isDefaultMap), mapTexture);
                 SceneManager.LoadScene("DesignMapAutonomous");
             }
-        });
+        }, true);
 
         
     }

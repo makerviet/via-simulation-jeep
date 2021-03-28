@@ -217,6 +217,7 @@ MonoBehaviour:
   - {fileID: 9052901831850505420}
   - {fileID: 163840792673971977}
   listMapIcons: []
+  content: {fileID: 4845066327893789565}
 --- !u!1 &4845066327470302143
 GameObject:
   m_ObjectHideFlags: 0

@@ -136,17 +136,17 @@ public class TileMapController : MonoBehaviour
     void OnLoadMapClicked()
     {
         // open map popup
-        BrowseMapPopup.OpenPopup(DoLoadMap);
+        BrowseMapPopup.OpenPopup(DoLoadMap, true);
     }
 
-    void DoLoadMap(string map_name)
+    void DoLoadMap(string map_name, bool isDefaultMap)
     {
         if (string.IsNullOrEmpty(map_name))
         {
             return;
         }
         Debug.LogError("Load Map: " + map_name);
-        MapData mapData = MapDataLoader.DataOfMap(map_name);
+        MapData mapData = MapDataLoader.DataOfMap(map_name, isDefaultMap);
         // convert data to map
         OnClearMap();
 
@@ -157,6 +157,8 @@ public class TileMapController : MonoBehaviour
     {
         yield return null;
         Debug.LogError("MapData: = " + JsonUtility.ToJson(mapData));
+
+        OnMapBgChanged(mapData.bg_id);
 
         var cellDatas = mapData.cell_datas;
         //listCells = mapData.cell_datas;
@@ -207,7 +209,7 @@ public class TileMapController : MonoBehaviour
     void OnSaveAsClicked()
     {
         //TextInputPopup.OpenPopup(DoSaveMap);
-        BrowseMapPopup.OpenPopup(DoSaveMap);
+        BrowseMapPopup.OpenPopup(DoSaveMap, false);
     }
 
     bool OnSaveMapClicked()
@@ -215,17 +217,17 @@ public class TileMapController : MonoBehaviour
         if (string.IsNullOrEmpty(currentMapName))
         {
             //TextInputPopup.OpenPopup(DoSaveMap);
-            BrowseMapPopup.OpenPopup(DoSaveMap);
+            BrowseMapPopup.OpenPopup(DoSaveMap, false);
             return false;
         }
         else
         {
-            DoSaveMap(currentMapName);
+            DoSaveMap(currentMapName, false);
             return true;
         }
     }
 
-    void DoSaveMap(string map_name)
+    void DoSaveMap(string map_name, bool isDefaultMap)
     {
         if (string.IsNullOrEmpty(map_name))
         {
@@ -298,6 +300,12 @@ public class TileMapController : MonoBehaviour
         if (IsMoving)
         {
             UpdateMovingCellPos();
+        }
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            //Do Menu Here
+            SceneManager.LoadScene("MenuScene");
         }
     }
 

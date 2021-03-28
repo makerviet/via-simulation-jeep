@@ -45,3 +45,26 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mapAllDatas:
     map_datas: []
+  defaultMapAssets:
+  - jsonData: {fileID: 4900000, guid: f1a017c0aaf344749920fa2846e5483e, type: 3}
+    texture: {fileID: 2800000, guid: b527a73e19acc4b6bad5f519af7a7885, type: 3}
+    data:
+      map_name: 
+      bg_id: 0
+      map_size: {x: 0, y: 0}
+      cell_datas: []
+      anchor_offset: {x: 0, y: 0}
+  - jsonData: {fileID: 4900000, guid: fd8d7e648ecd74321a6787e70749bcdf, type: 3}
+    texture: {fileID: 2800000, guid: 274327052e5374fe19f31641c50bdf2c, type: 3}
+    data:
+      map_name: 
+      bg_id: 0
+      map_size: {x: 0, y: 0}
+      cell_datas: []
+      anchor_offset: {x: 0, y: 0}
+  currentMapdata:
+    map_name: 
+    bg_id: 0
+    map_size: {x: 10, y: 10}
+    cell_datas: []
+    anchor_offset: {x: 0, y: 0}

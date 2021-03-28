@@ -60,7 +60,15 @@ public class WorldMapBuilder : MonoBehaviour
         GenMap(mapData);
         if (miniMap != null)
         {
-            StartCoroutine(LoadMiniMap(mapData));
+            Texture texture = MapDataLoader.Instance.currentMapdataTexture;
+            if (texture != null)
+            {
+                miniMap.texture = texture;
+            }
+            else
+            {
+                StartCoroutine(LoadMiniMap(mapData));
+            }
         }
     }
 

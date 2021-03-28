@@ -14,10 +14,19 @@ public class MapDataLoader : MonoBehaviour
         public List<MapData> map_datas = new List<MapData>();
     }
 
-    public List<MapData> allMaps => mapAllDatas.map_datas;
-    public int nMap => mapAllDatas.map_datas.Count;
+    [System.Serializable]
+    public class MapAsset
+    {
+        public TextAsset jsonData;
+        public Texture texture;
+        public MapData data;
+    }
 
     [SerializeField] MapAllData mapAllDatas;
+    [SerializeField] List<MapAsset> defaultMapAssets = new List<MapAsset>();
+
+    //[Header("Debug")]
+    //[SerializeField] List<MapData> defaultMapDatas = new List<MapData>();
 
     private void Awake()
     {
@@ -25,16 +34,12 @@ public class MapDataLoader : MonoBehaviour
         {
             Instance = this;
             GameObject.DontDestroyOnLoad(this.gameObject);
+            LoadData();
         }
         else
         {
             GameObject.DestroyImmediate(this.gameObject);
         }
-    }
-
-    private void Start()
-    {
-        LoadData();
     }
 
     void LoadData()
@@ -44,6 +49,12 @@ public class MapDataLoader : MonoBehaviour
         if (mapAllDatas == null)
         {
             mapAllDatas = new MapAllData();
+        }
+
+        foreach (MapAsset asset in defaultMapAssets)
+        {
+            string jsonData = asset.jsonData.text;
+            asset.data = JsonUtility.FromJson<MapData>(jsonData);
         }
     }
 
@@ -57,7 +68,7 @@ public class MapDataLoader : MonoBehaviour
     public static void SaveMap(MapData mapData, Texture2D mapTexture)
     {
         Instance.DoSaveMap(mapData, mapTexture);
-        SetInstanceMapData(mapData);
+        SetInstanceMapData(mapData, mapTexture);
     }
 
     void DoSaveMap(MapData mapdata, Texture2D mapTexture)
@@ -106,15 +117,40 @@ public class MapDataLoader : MonoBehaviour
     }
 
     public MapData currentMapdata;
+    public Texture currentMapdataTexture;
     public static MapData instanceMapData => Instance.currentMapdata;
 
-    public static void SetInstanceMapData(MapData pMapData)
+    public static void SetInstanceMapData(MapData pMapData, Texture pMapTexture)
     {
         Instance.currentMapdata = pMapData;
+        Instance.currentMapdataTexture = pMapTexture;
     }
 
-    public static MapData DataOfMap(string mapId)
+    public static Texture TextureOfDefaultMap(string mapId)
     {
+        foreach (MapAsset mapAsset in Instance.defaultMapAssets)
+        {
+            if (string.Compare(mapAsset.data.map_create_id, mapId) == 0)
+            {
+                return mapAsset.texture;
+            }
+        }
+        return null;
+    }
+
+    public static MapData DataOfMap(string mapId, bool isDefaultMap)
+    {
+        if (isDefaultMap)
+        {
+            foreach (MapAsset mapAsset in Instance.defaultMapAssets)
+            {
+                if (string.Compare(mapAsset.data.map_create_id, mapId) == 0)
+                {
+                    return JsonUtility.FromJson<MapData>(JsonUtility.ToJson(mapAsset.data));
+                }
+            }
+        }
+
         foreach (MapData mapData in Instance.allMaps)
         {
             if (string.Compare(mapData.map_create_id, mapId) == 0)
@@ -125,4 +161,12 @@ public class MapDataLoader : MonoBehaviour
         }
         return null;
     }
+
+
+
+
+
+    public List<MapData> allMaps => mapAllDatas.map_datas;
+    public List<MapAsset> defaultMaps => defaultMapAssets;
+    public int nMap => mapAllDatas.map_datas.Count;
 }

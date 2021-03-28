@@ -3,10 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using static MapDataLoader;
 
 public class MapIcon : MonoBehaviour
 {
-    Action<string> OnMapIconSelectedListener;
+    Action<string, bool> OnMapIconSelectedListener;
 
     [SerializeField] Button mButton;
     [SerializeField] RawImage rawImage;
@@ -15,6 +16,7 @@ public class MapIcon : MonoBehaviour
     [SerializeField] string mapId;
 
     [SerializeField] MapData mapData;
+    [SerializeField] bool isDefaultMap = false;
 
     void Start()
     {
@@ -26,10 +28,19 @@ public class MapIcon : MonoBehaviour
         mButton.onClick.AddListener(OnButtonClicked);
     }
 
-    public void AddSelectedListener(Action<string> pListener)
+    public void AddSelectedListener(Action<string, bool> pListener)
     {
         OnMapIconSelectedListener -= pListener;
         OnMapIconSelectedListener += pListener;
+    }
+
+    public void SetupDefaultMapData(MapAsset pMapAsset)
+    {
+        this.isDefaultMap = true;
+        this.mapData = pMapAsset.data;
+        label.text = mapData.map_name;
+        this.name = string.Format("Map_{0}", mapData.map_name);
+        rawImage.texture = pMapAsset.texture;
     }
 
     public void SetupIcon(MapData pMapData)
@@ -52,7 +63,7 @@ public class MapIcon : MonoBehaviour
 
     void OnButtonClicked()
     {
-        OnMapIconSelectedListener?.Invoke(mapData.map_create_id);
+        OnMapIconSelectedListener?.Invoke(mapData.map_create_id, isDefaultMap);
     }
 
 
