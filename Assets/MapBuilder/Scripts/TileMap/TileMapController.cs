@@ -4,6 +4,7 @@ using Koi.Common;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using static LayerSelector;
 using static MapData;
 
 public class TileMapController : MonoBehaviour
@@ -24,17 +25,28 @@ public class TileMapController : MonoBehaviour
     [Header("MapRender")]
     [SerializeField] RenderTexture mapRenderTexture;
 
+    [Header("Layer")]
+    [SerializeField] MapLayer currentLayer = MapLayer.TileMap;
+    [SerializeField] LayerSelector layerSelector;
+
     [Header("Map Setup")]
     [SerializeField] Canvas canvas;
     [SerializeField] TileMapInput mapInput;
+
+
+    
     [SerializeField] TileSetController tileSetController;
+
+    [SerializeField] MapObjectLayerGenerator trafficSignMapGenerator;
+
+
     [SerializeField] Vector2 cellSize = Vector2.one * 100.0f;
     [SerializeField] Vector2 neoCell = Vector2.one * 50.0f;
     [SerializeField] RectTransform root;
     [SerializeField] List<CellResource> cellResources;
 
     [Header("Bg")]
-    [SerializeField] TleSetLayerController layerController;
+    [SerializeField] TileSetBgSelector bgSelector;
     [SerializeField] Image bg;
     [SerializeField] List<Sprite> bgSprites;
 
@@ -95,9 +107,12 @@ public class TileMapController : MonoBehaviour
         mapInput.AddBeginDragListener(OnBeginDragging);
         mapInput.AddDraggingListener(OnMouseDragging);
         mapInput.AddFinishDragListener(OnFinishDragging);
+
+        layerSelector.AddMapLayerSelectedListener(OnLayerSelected);
+
         tileSetController.AddTileSelectedListener(OnTileSelected);
 
-        layerController.AddBgSelectedListener(OnMapBgChanged);
+        bgSelector.AddBgSelectedListener(OnMapBgChanged);
 
         clear.onClick.AddListener(OnClearMap);
         genMapButton.onClick.AddListener(OnGenMapClicked);
@@ -324,9 +339,37 @@ public class TileMapController : MonoBehaviour
         }
     }
 
+    void OnLayerSelected(MapLayer pMapLayer)
+    {
+        currentLayer = pMapLayer;
+        Debug.LogError("select layer " + pMapLayer.ToString());
+
+        mapInput.SwitchLayer(currentLayer);
+
+        if (currentLayer == MapLayer.TileMap)
+        {
+            trafficSignMapGenerator.DoSleep();
+            pointerImage.gameObject.SetActive(true);
+        }
+        else
+        {
+            pointerImage.gameObject.SetActive(false);
+
+            trafficSignMapGenerator.DoActive();
+        }
+    }
+
+    
+
     void OnTileSelected(int tileId, int rot, Image iconImage)
     {
         pointerTileId = tileId;
+
+        if (currentLayer != MapLayer.TileMap)
+        {
+            return;
+        }
+
         if (tileId >= 0)
         {
             // draw mode
@@ -354,6 +397,11 @@ public class TileMapController : MonoBehaviour
 
     void OnCarSelected()
     {
+        if (currentLayer != MapLayer.TileMap)
+        {
+            return;
+        }
+
         onCarDraw = true;
         pointerImage.sprite = carImage.sprite;
         pointerImage.rectTransform.sizeDelta = carImage.rectTransform.sizeDelta;
@@ -361,8 +409,15 @@ public class TileMapController : MonoBehaviour
         pointerImage.color = carImage.color;
     }
 
+    
+
     void OnBeginDragging(Vector2 screenPos)
     {
+        if (currentLayer != MapLayer.TileMap)
+        {
+            return;
+        }
+
         drawState = DrawState.Dragging;
 
         ProcessDrag();
@@ -370,6 +425,11 @@ public class TileMapController : MonoBehaviour
 
     void OnMouseDragging(Vector2 screenPos)
     {
+        if (currentLayer != MapLayer.TileMap)
+        {
+            return;
+        }
+
         ProcessDrag();
     }
 
@@ -428,6 +488,11 @@ public class TileMapController : MonoBehaviour
 
     void OnFinishDragging()
     {
+        if (currentLayer != MapLayer.TileMap)
+        {
+            return;
+        }
+
         drawState = DrawState.Moving;
     }
 
@@ -443,6 +508,8 @@ public class TileMapController : MonoBehaviour
         }
         return cellResources[0];
     }
+
+    
 
     bool IsMoving => drawState == DrawState.Moving;
 

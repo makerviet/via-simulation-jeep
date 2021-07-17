@@ -10,26 +10,44 @@ public class MapData
     [System.Serializable]
     public class MapCellData
     {
-        public int id_inmap;
+        public int id_inmap;    // position on grid cell
         public int tile_id;
         public int rot;
     }
 
     [System.Serializable]
-    public class MapLayerData
+    public class MapObjData
     {
-        public int layer_id;
-        public List<MapCellData> cell_datas = new List<MapCellData>();
+        public int obj_id;
+        public Vector2 pos;
+        public float rot;
     }
 
+    //[System.Serializable]
+    //public class MapLayerData
+    //{
+    //    public int layer_id;
+    //    public List<MapCellData> cell_datas = new List<MapCellData>();
+    //}
+
+
+    #region data
     public string map_name;
     public string map_create_id => map_name;
 
     public int bg_id;
+
+    #region tile_map
     public Vector2Int map_size = new Vector2Int(10, 10);
-    //public List<MapLayerData> map_layers = new List<MapLayerData>();
     public List<MapCellData> cell_datas = new List<MapCellData>();
     public Vector2 anchor_offset = Vector2.zero;
+    #endregion
+
+    #region obj
+    public List<MapObjData> obj_datas = new List<MapObjData>();
+    #endregion
+
+    #endregion
 
     public void CleanNullCell()
     {

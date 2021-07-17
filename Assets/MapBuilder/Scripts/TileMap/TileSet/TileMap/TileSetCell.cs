@@ -6,13 +6,20 @@ using UnityEngine.UI;
 
 public class TileSetCell : MonoBehaviour
 {
+    public enum CellType
+    {
+        TileMap = 0,
+        Sign = 1
+    }
+
     Action<int> OnSelectedListener;
 
     Button m_button;
     Image m_image;
 
-
+    [SerializeField] CellType type = CellType.TileMap;
     [SerializeField] MapCellType cellId;
+    [SerializeField] TrafficSignType signId;
     
     public Image iconImage
     {
@@ -74,11 +81,20 @@ public class TileSetCell : MonoBehaviour
 
     void OnCellSelected()
     {
-        OnSelectedListener?.Invoke((int)cellId);
+        if (type == CellType.TileMap)
+        {
+            OnSelectedListener?.Invoke((int)cellId);
+        }
+        else
+        {
+            OnSelectedListener?.Invoke((int)signId);
+        }
     }
 
     public void SetSelectState(bool isSelect)
     {
         //outline.enabled = isSelect;
     }
+
+
 }
