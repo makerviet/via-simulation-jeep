@@ -25,14 +25,14 @@ public class TrafficSignObject : MonoBehaviour
 
     void InitListener()
     {
-        selectButton.onClick.AddListener(OnSelected);
+        //selectButton.onClick.AddListener(OnSelected);
     }
 
-    public void AddSelectedListener(Action<TrafficSignType> pListener)
-    {
-        this.OnSelectedListener -= pListener;
-        this.OnSelectedListener += pListener;
-    }
+    //public void AddSelectedListener(Action<TrafficSignType> pListener)
+    //{
+    //    this.OnSelectedListener -= pListener;
+    //    this.OnSelectedListener += pListener;
+    //}
 
     public void UpdateRot(float pRot)
     {

@@ -50,7 +50,7 @@ public class MapObjectLayerGenerator : MonoBehaviour
     public void DoActive()
     {
         m_state = MapObjectState.S1_Selecting;
-        trafficSignPointer.gameObject.SetActive(true);
+        //trafficSignPointer.gameObject.SetActive(true);
 
         foreach (var trafficSign in trafficSignObjects)
         {
@@ -67,8 +67,7 @@ public class MapObjectLayerGenerator : MonoBehaviour
 
     void OnLeftClick(Vector2 screenPos)
     {
-        if (m_state != MapObjectState.S1_Selecting
-            && m_state != MapObjectState.S2_Drawing)
+        if (!IsActing)
         {
             return;
         }
@@ -100,14 +99,9 @@ public class MapObjectLayerGenerator : MonoBehaviour
                 }
             }
 
-            //PointerEventData eventDataCurrentPosition = new PointerEventData(EventSystem.current);
-            //eventDataCurrentPosition.position = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
-            //List<RaycastResult> results = new List<RaycastResult>();
-            //EventSystem.current.RaycastAll(eventDataCurrentPosition, results);
-
 
             // push on map
-            if (!IsSelectOnSign)
+            if (!IsSelectOnSign && m_state == MapObjectState.S2_Drawing)
             {
                 Debug.LogError("NOT Found sign obj, create new");
                 TrafficSignRes res = ResourceOfSign(pointerSignId);
@@ -115,26 +109,34 @@ public class MapObjectLayerGenerator : MonoBehaviour
                 trafficSignObjects.Add(signObject);
                 signObject.name = signObject.name + (signObject.transform.parent.childCount + 1);
                 signObject.transform.localPosition = localPoint;
+                signObject.OnSelected();
             }
 
             Debug.LogError("Setup for Pointer");
-            trafficSignPointer.gameObject.SetActive(true);
-            trafficSignPointer.OnSelected(signObject);
-            trafficSignPointer.transform.position = signObject.transform.position;
-            Debug.LogError("Setup for Pointer Done");
+            if (signObject != null)
+            {
+                trafficSignPointer.gameObject.SetActive(true);
+                trafficSignPointer.OnSelected(signObject);
+                trafficSignPointer.transform.position = signObject.transform.position;
+                Debug.LogError("Setup for Pointer Done");
+
+                m_state = MapObjectState.S1_Selecting;
+            }
+            else
+            {
+                trafficSignPointer.OnUnSelected();
+                trafficSignPointer.gameObject.SetActive(false);
+            }
         }
-
-        //int col = Mathf.RoundToInt((localPoint.x - neoCell.x) / cellSize.x);
-        //int row = Mathf.RoundToInt((localPoint.y - neoCell.y) / cellSize.y);
-        //localPoint.x = col * cellSize.x + neoCell.x;
-        //localPoint.y = row * cellSize.y + neoCell.y;
-        //pointerImage.rectTransform.anchoredPosition = localPoint;
-
     }
 
     void OnTrafficSignTileSelected(int signId, int id, Image pImage)
     {
         pointerSignId = signId;
+        if (IsActing)
+        {
+            m_state = MapObjectState.S2_Drawing;
+        }
     }
 
 
@@ -150,4 +152,7 @@ public class MapObjectLayerGenerator : MonoBehaviour
         }
         return trafficSignResources[0];
     }
+
+
+    bool IsActing => (m_state == MapObjectState.S1_Selecting || m_state == MapObjectState.S2_Drawing);
 }

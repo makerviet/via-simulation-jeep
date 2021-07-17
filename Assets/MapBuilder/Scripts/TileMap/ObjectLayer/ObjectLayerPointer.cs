@@ -37,6 +37,14 @@ public class ObjectLayerPointer : MonoBehaviour
         center.AddBeginDragListener(OnBeginDrag);
         center.AddDraggingListener(OnDragging);
         center.AddFinishDragListener(OnFinishDrag);
+
+        axisX.AddBeginDragListener(OnBeginDragX);
+        axisX.AddDraggingListener(OnDraggingX);
+        axisX.AddFinishDragListener(OnFinishDragX);
+
+        axisY.AddBeginDragListener(OnBeginDragY);
+        axisY.AddDraggingListener(OnDraggingY);
+        axisY.AddFinishDragListener(OnFinishDragY);
     }
 
     void OnRotChanged(float pValue)
@@ -47,7 +55,7 @@ public class ObjectLayerPointer : MonoBehaviour
     public void OnSelected(TrafficSignObject pObject)
     {
         Debug.LogError("OnSelected obj " + pObject.name);
-        if (selectingObject != null)
+        if (selectingObject != null && pObject != selectingObject)
         {
             selectingObject.OnUnSelect();
         }
@@ -57,9 +65,20 @@ public class ObjectLayerPointer : MonoBehaviour
         this.rotationSlider.value = pObject.Rotation;
     }
 
+    public void OnUnSelected()
+    {
+        if (selectingObject != null)
+        {
+            selectingObject.OnUnSelect();
+        }
+    }
+
     void UpdateSelectingObjectPos()
     {
-        selectingObject.transform.position = root.position;
+        if (selectingObject != null)
+        {
+            selectingObject.transform.position = root.position;
+        }   
     }
 
     Vector2 savedLocalTouchPos;
@@ -73,11 +92,8 @@ public class ObjectLayerPointer : MonoBehaviour
             return;
         }
         m_state = State.S3_OnMoveXY;
-        Vector2 currentLocalTouchPos;
-        bool onMap = RectTransformUtility.ScreenPointToLocalPointInRectangle(
-            root.parent.GetComponent<RectTransform>(),Input.mousePosition,
-            canvas.worldCamera, out currentLocalTouchPos);
-        savedLocalTouchPos = currentLocalTouchPos;
+        
+        savedLocalTouchPos = GetTouchLocalPos();
         savedLocalPos = root.localPosition;
     }
 
@@ -88,10 +104,7 @@ public class ObjectLayerPointer : MonoBehaviour
             return;
         }
 
-        Vector2 currentLocalTouchPos;
-        bool onMap = RectTransformUtility.ScreenPointToLocalPointInRectangle(
-            root.parent.GetComponent<RectTransform>(), Input.mousePosition,
-            canvas.worldCamera, out currentLocalTouchPos);
+        Vector2 currentLocalTouchPos = GetTouchLocalPos();
         root.localPosition = savedLocalPos + currentLocalTouchPos - savedLocalTouchPos;
 
         UpdateSelectingObjectPos();
@@ -109,6 +122,11 @@ public class ObjectLayerPointer : MonoBehaviour
         {
             return;
         }
+
+        m_state = State.S1_OnMoveX;
+        
+        savedLocalTouchPos = GetTouchLocalPos();
+        savedLocalPos = root.localPosition;
     }
 
     void OnDraggingX(int pointerId, Vector2 screenPos, int mouseId)
@@ -117,11 +135,18 @@ public class ObjectLayerPointer : MonoBehaviour
         {
             return;
         }
+
+        Vector2 currentLocalTouchPos = GetTouchLocalPos();
+        var newPos = savedLocalPos + currentLocalTouchPos - savedLocalTouchPos;
+        newPos.y = root.localPosition.y;
+        root.localPosition = newPos;
+
+        UpdateSelectingObjectPos();
     }
 
     void OnFinishDragX(int pointerId)
     {
-
+        m_state = State.S0_Idle;
     }
 
     void OnBeginDragY(int pointerId, Vector2 screenPos, int mouseId)
@@ -131,6 +156,11 @@ public class ObjectLayerPointer : MonoBehaviour
         {
             return;
         }
+
+        m_state = State.S2_OnMoveY;
+
+        savedLocalTouchPos = GetTouchLocalPos();
+        savedLocalPos = root.localPosition;
     }
 
     void OnDraggingY(int pointerId, Vector2 screenPos, int mouseId)
@@ -139,11 +169,28 @@ public class ObjectLayerPointer : MonoBehaviour
         {
             return;
         }
+
+        Vector2 currentLocalTouchPos = GetTouchLocalPos();
+        var newPos = savedLocalPos + currentLocalTouchPos - savedLocalTouchPos;
+        newPos.x = root.localPosition.x;
+        root.localPosition = newPos;
+
+        UpdateSelectingObjectPos();
     }
 
     void OnFinishDragY(int pointerId)
     {
+        m_state = State.S0_Idle;
+    }
 
+
+    Vector2 GetTouchLocalPos()
+    {
+        Vector2 currentLocalTouchPos;
+        bool onMap = RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            root.parent.GetComponent<RectTransform>(), Input.mousePosition,
+            canvas.worldCamera, out currentLocalTouchPos);
+        return currentLocalTouchPos;
     }
 
 
