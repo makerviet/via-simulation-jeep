@@ -213,6 +213,7 @@ public class TileMapController : MonoBehaviour
                 cellIcon.name = string.Format("Cell[{0}]", (col + row * mapSize.x));
                 cellIcon.rectTransform.anchoredPosition = pointerImage.rectTransform.anchoredPosition;
                 cellIcon.sprite = pointerImage.sprite;
+                cellIcon.raycastTarget = false;
                 cellIcon.rectTransform.sizeDelta = pointerImage.rectTransform.sizeDelta;
                 cellIcon.rectTransform.localRotation = pointerImage.rectTransform.localRotation;
 
@@ -256,8 +257,9 @@ public class TileMapController : MonoBehaviour
             bg_id = bgId,
             map_size = mapSize,
             cell_datas = listCells,
-            anchor_offset = carPos,
-            map_name = currentMapName
+            car_pos = carPos,
+            map_name = currentMapName,
+            sign_obj_datas = trafficSignMapGenerator.GetMapObjDatas(cellSize, neoCell)
         };
         mapData.CleanNullCell();
         string jsonData = JsonUtility.ToJson(mapData);
@@ -305,7 +307,9 @@ public class TileMapController : MonoBehaviour
             bg_id = bgId,
             map_size = mapSize,
             cell_datas = listCells,
-            anchor_offset = carPos
+            car_pos = carPos,
+
+            sign_obj_datas = trafficSignMapGenerator.GetMapObjDatas(cellSize, neoCell)
         };
         worldMapBuilder.GenMap(mapData);
     }
@@ -471,6 +475,7 @@ public class TileMapController : MonoBehaviour
                     cellIcon.rectTransform.localScale = Vector3.one;
                     cellIcon.name = string.Format("Cell[{0}]", (col + row * mapSize.x));
                     cellIcon.rectTransform.anchoredPosition = pointerImage.rectTransform.anchoredPosition;
+                    cellIcon.raycastTarget = false;
 
                     listCellIcons[idInListCell] = cellIcon;
                 }

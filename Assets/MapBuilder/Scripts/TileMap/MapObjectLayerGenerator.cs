@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using static MapData;
 
 public class MapObjectLayerGenerator : MonoBehaviour
 {
@@ -33,6 +34,7 @@ public class MapObjectLayerGenerator : MonoBehaviour
     [Header("Debug")]
     [SerializeField] MapObjectState m_state = MapObjectState.S0_Idle;
     [SerializeField] List<TrafficSignObject> trafficSignObjects = new List<TrafficSignObject>();
+    [SerializeField] List<TrafficSignObject> unuseTrafficSignObjects = new List<TrafficSignObject>();
 
     [SerializeField] int pointerSignId;
 
@@ -137,6 +139,23 @@ public class MapObjectLayerGenerator : MonoBehaviour
         {
             m_state = MapObjectState.S2_Drawing;
         }
+    }
+
+    public List<MapSignData> GetMapObjDatas(Vector2 mapCellDesignSize, Vector2 neoCell)
+    {
+        List<MapSignData> result = new List<MapSignData>();
+        foreach (var signObj in trafficSignObjects)
+        {
+            var data = new MapSignData();
+            data.sign_id = (int)signObj.SignType;
+            data.rot = signObj.Rotation;
+            data.pos = signObj.transform.localPosition;
+            data.pos.x = (data.pos.x - neoCell.x) / mapCellDesignSize.x;
+            data.pos.y = (data.pos.y - neoCell.y) / mapCellDesignSize.y;
+            result.Add(data);
+        }
+
+        return result;
     }
 
 

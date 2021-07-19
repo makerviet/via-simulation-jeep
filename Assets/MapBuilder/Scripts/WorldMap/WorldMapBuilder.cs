@@ -14,9 +14,20 @@ public class WorldMapBuilder : MonoBehaviour
         public Transform prefab;
     }
 
+    [System.Serializable]
+    public class SignModel
+    {
+        public TrafficSignType sign_type;
+        public WorldTrafficSign prefab;
+    }
+
     [SerializeField] List<GameObject> bgGameObjects = new List<GameObject>();
     [SerializeField] List<CellModel> cellModels = new List<CellModel>();
+    [SerializeField] List<SignModel> signModels = new List<SignModel>();
+
     [SerializeField] Transform root;
+    [SerializeField] Transform cellRoot;
+    [SerializeField] Transform signRoot;
     [SerializeField] float cellSize = 1.0f;
 
     [SerializeField] Transform car;
@@ -30,7 +41,10 @@ public class WorldMapBuilder : MonoBehaviour
     [Header("Debug")]
     [SerializeField] MapData mapData;
     [SerializeField] List<MapCellData> listCellDatas;
+    [SerializeField] List<MapSignData> listSignDatas;
+
     [SerializeField] List<Transform> listCells = new List<Transform>();
+    [SerializeField] List<WorldTrafficSign> listSigns = new List<WorldTrafficSign>();
 
     public string debugData = "";
 
@@ -106,7 +120,7 @@ public class WorldMapBuilder : MonoBehaviour
     public void GenMap(MapData mapData)
     {
         this.mapData = mapData;
-        GenMap(mapData.map_size, mapData.cell_datas, mapData.anchor_offset);
+        GenMap(mapData.map_size, mapData.cell_datas, mapData.car_pos, mapData.sign_obj_datas);
 
         for (int i = 0; i < bgGameObjects.Count; i++)
         {
@@ -114,7 +128,8 @@ public class WorldMapBuilder : MonoBehaviour
         }
     }
 
-    public void GenMap(Vector2Int mapSize, List<MapCellData> cellDatas, Vector2 neoOffset)
+    public void GenMap(Vector2Int mapSize, List<MapCellData> cellDatas, Vector2 neoOffset,
+        List<MapSignData> signDatas)
     {
         foreach (var cell in listCells)
         {
@@ -124,6 +139,39 @@ public class WorldMapBuilder : MonoBehaviour
 
 
         listCellDatas = cellDatas;
+        CreateTileCells(mapSize, cellDatas);
+
+        // signal
+        listSignDatas = signDatas;
+        CreateSignObjs(signDatas);
+
+        if (car != null)
+        {
+            float posCol = neoOffset.x - mapSize.x * 0.5f;
+            float posRow = neoOffset.y - mapSize.y * 0.5f;
+            var posOnRoot = new Vector3(posCol * cellSize, 0, posRow * cellSize);
+            transform.position = car.position - posOnRoot;
+        }
+    }
+
+    void CreateSignObjs(List<MapSignData> signDatas)
+    {
+        for (int i = 0; i < signDatas.Count; i++)
+        {
+            var signData = signDatas[i];
+            var signModel = SignModelOf(signData.sign_id);
+            WorldTrafficSign worldTrafficSign = Instantiate(signModel.prefab, signRoot);
+            Transform signTrans = worldTrafficSign.transform;
+            signTrans.transform.localPosition = new Vector3(signData.pos.x * cellSize, 0, signData.pos.y * cellSize);
+            signTrans.transform.localRotation = Quaternion.Euler(0, -signData.rot, 0);
+            signTrans.transform.localScale = Vector3.one;
+            listSigns.Add(worldTrafficSign);
+        }
+    }
+
+
+    void CreateTileCells(Vector2Int mapSize, List<MapCellData> cellDatas)
+    {
         for (int i = 0; i < cellDatas.Count; i++)
         {
             var cell = cellDatas[i];
@@ -139,20 +187,12 @@ public class WorldMapBuilder : MonoBehaviour
             float posRow = row - mapSize.y * 0.5f;
 
             CellModel cellModel = CellModelOf(cell.tile_id);
-            Transform cellTransform = Instantiate<Transform>(cellModel.prefab, root);
+            Transform cellTransform = Instantiate<Transform>(cellModel.prefab, cellRoot);
             cellTransform.localPosition = new Vector3(posCol * cellSize, 0, posRow * cellSize);
             cellTransform.localRotation = Quaternion.Euler(0, -cell.rot, 0);
             cellTransform.localScale = Vector3.one;
             listCells.Add(cellTransform);
             cellTransform.name = "Cell[" + i + "]" + " tile_" + cell.tile_id + " rot_" + cell.rot;
-        }
-
-        if (car != null)
-        {
-            float posCol = neoOffset.x - mapSize.x * 0.5f;
-            float posRow = neoOffset.y - mapSize.y * 0.5f;
-            var posOnRoot = new Vector3(posCol * cellSize, 0, posRow * cellSize);
-            transform.position = car.position - posOnRoot;
         }
     }
 
@@ -167,5 +207,18 @@ public class WorldMapBuilder : MonoBehaviour
             }
         }
         return cellModels[0];
+    }
+
+    SignModel SignModelOf(int sign_id)
+    {
+        TrafficSignType signType = (TrafficSignType)sign_id;
+        foreach (SignModel model in signModels)
+        {
+            if (model.sign_type == signType)
+            {
+                return model;
+            }
+        }
+        return signModels[0];
     }
 }

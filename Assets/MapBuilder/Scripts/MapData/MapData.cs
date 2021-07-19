@@ -16,9 +16,9 @@ public class MapData
     }
 
     [System.Serializable]
-    public class MapObjData
+    public class MapSignData
     {
-        public int obj_id;
+        public int sign_id;
         public Vector2 pos;
         public float rot;
     }
@@ -40,14 +40,19 @@ public class MapData
     #region tile_map
     public Vector2Int map_size = new Vector2Int(10, 10);
     public List<MapCellData> cell_datas = new List<MapCellData>();
+
     public Vector2 anchor_offset = Vector2.zero;
+    public Vector2 car_pos;
     #endregion
 
     #region obj
-    public List<MapObjData> obj_datas = new List<MapObjData>();
+    public List<MapSignData> sign_obj_datas = new List<MapSignData>();
     #endregion
 
     #endregion
+
+
+    public Vector2 carPosition => (car_pos.magnitude > 0) ? car_pos : anchor_offset;
 
     public void CleanNullCell()
     {

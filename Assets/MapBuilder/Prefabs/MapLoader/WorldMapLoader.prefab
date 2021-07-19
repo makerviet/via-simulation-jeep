@@ -94,6 +94,66 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &152298304925335201
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7299308606766355123}
+  m_Layer: 0
+  m_Name: TrafficRoot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7299308606766355123
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 152298304925335201}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 2560514073578275012}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2030504928447237928
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4657369110033753671}
+  m_Layer: 0
+  m_Name: TileMapRoot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4657369110033753671
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2030504928447237928}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 2560514073578275012}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2560514073543283879
 GameObject:
   m_ObjectHideFlags: 0
@@ -162,17 +222,39 @@ MonoBehaviour:
   - cell_id: 5
     prefab: {fileID: 1963040057996279807, guid: 0ddf62c8933cc4b0992f513e768fca8d,
       type: 3}
+  signModels:
+  - sign_type: 0
+    prefab: {fileID: 7240163901973464708, guid: bb651e12c27c84e759f71e67f298c969,
+      type: 3}
+  - sign_type: 1
+    prefab: {fileID: 7304312472454140428, guid: 39ea9b494750b4cf9bc98e9d48dca0ad,
+      type: 3}
+  - sign_type: 2
+    prefab: {fileID: 8367401818015225931, guid: 1d5b6668d544f43e5862c4b5c44bb924,
+      type: 3}
+  - sign_type: 3
+    prefab: {fileID: 3020911611425532210, guid: 0956e4cfa79114df0bcf7fcb7b16d59a,
+      type: 3}
   root: {fileID: 2560514073578275012}
+  cellRoot: {fileID: 4657369110033753671}
+  signRoot: {fileID: 7299308606766355123}
   cellSize: 4
   car: {fileID: 0}
   autoLoadMap: 0
+  miniMap: {fileID: 0}
+  miniMapCarIcon: {fileID: 0}
   mapData:
+    map_name: 
     bg_id: 0
     map_size: {x: 10, y: 10}
     cell_datas: []
     anchor_offset: {x: 0, y: 0}
+    car_pos: {x: 0, y: 0}
+    sign_obj_datas: []
   listCellDatas: []
+  listSignDatas: []
   listCells: []
+  listSigns: []
   debugData: 
 --- !u!1 &2560514073578275035
 GameObject:
@@ -200,7 +282,9 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
+  m_Children:
+  - {fileID: 4657369110033753671}
+  - {fileID: 7299308606766355123}
   m_Father: {fileID: 2560514073543283872}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
