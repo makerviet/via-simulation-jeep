@@ -72,41 +72,6 @@ namespace UnityStandardAssets.Vehicles.Car
 
         public float BrakeInput { get; private set; }
 
-        private bool m_isRecording = false;
-        public bool IsRecording {
-            get
-            {
-                return m_isRecording;
-            }
-
-            set
-            {
-                m_isRecording = value;
-                if(value == true)
-                { 
-					Debug.Log("Starting to record");
-					carSamples = new Queue<CarSample>();
-					StartCoroutine(Sample());             
-                } 
-				else
-                {
-                    Debug.Log("Stopping record");
-                    StopCoroutine(Sample());
-                    Debug.Log("Writing to disk");
-					//save the cars coordinate parameters so we can reset it to this properly after capturing data
-					saved_position = transform.position;
-					saved_rotation = transform.rotation;
-					//see how many samples we captured use this to show save percentage in UISystem script
-					TotalSamples = carSamples.Count;
-					isSaving = true;
-					StartCoroutine(WriteSamplesToDisk());
-
-                };
-            }
-
-        }
-
-
 		public bool checkSaveLocation()
 		{
 			if (m_saveLocation != "") 
@@ -201,10 +166,6 @@ namespace UnityStandardAssets.Vehicles.Car
 
         public void Update()
         {
-            if (IsRecording)
-            {
-                //Dump();
-            }
         }
 
         public void Move (float steering, float accel, float footbrake, float handbrake)
@@ -438,7 +399,6 @@ namespace UnityStandardAssets.Vehicles.Car
 				StopCoroutine(WriteSamplesToDisk());
 				isSaving = false;
 
-				//need to reset the car back to its position before ending recording, otherwise sometimes the car ended up in strange areas
 				transform.position = saved_position;
 				transform.rotation = saved_rotation;
 				m_Rigidbody.velocity = new Vector3(0f,-10f,0f);
@@ -482,11 +442,6 @@ namespace UnityStandardAssets.Vehicles.Car
                 //may or may not be needed
             }
 
-            // Only reschedule if the button hasn't toggled
-            if (IsRecording)
-            {
-                StartCoroutine(Sample());
-            }
 				
         }
 
