@@ -12,7 +12,7 @@ public class CommandServer : MonoBehaviour
 	public CarRemoteControl CarRemoteControl;
 	public Camera FrontFacingCamera;
 	private CarController _carController;
-	private WebSocketServer _webSocket;
+	private static WebSocketServer _webSocket;
 
 	private float _throttle = 0;
 	private float _steering = 0;
@@ -22,9 +22,11 @@ public class CommandServer : MonoBehaviour
 	void Start()
 	{
 		_carController = CarRemoteControl.GetComponent<CarController>();
-		_webSocket = new WebSocketServer (4567);
-		_webSocket.AddWebSocketService<SocketService>("/simulation", () => new SocketService(this.OnSteer) { IgnoreExtensions = true });
-		_webSocket.Start ();
+		if (_webSocket == null) {
+			_webSocket = new WebSocketServer (4567);
+			_webSocket.AddWebSocketService<SocketService>("/simulation", () => new SocketService(this.OnSteer) { IgnoreExtensions = true });
+			_webSocket.Start();
+		}
 	}
 
 	// Update is called once per frame
