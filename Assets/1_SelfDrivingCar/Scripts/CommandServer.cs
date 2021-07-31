@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
-using SocketIO;
+using WebSocketSharp;
+using WebSocketSharp.Server;
 using UnityStandardAssets.Vehicles.Car;
 using System;
 using System.Security.AccessControl;
@@ -10,55 +11,55 @@ public class CommandServer : MonoBehaviour
 {
 	public CarRemoteControl CarRemoteControl;
 	public Camera FrontFacingCamera;
-	private SocketIOComponent _socket;
 	private CarController _carController;
+	private static WebSocketServer _webSocket;
+
+	private float _throttle = 0;
+	private float _steering = 0;
+	private bool _controlUpdated = false;
 
 	// Use this for initialization
 	void Start()
 	{
-		_socket = GameObject.Find("SocketIO").GetComponent<SocketIOComponent>();
-		_socket.On("open", OnOpen);
-		_socket.On("steer", OnSteer);
-		_socket.On("manual", onManual);
 		_carController = CarRemoteControl.GetComponent<CarController>();
+		if (_webSocket == null) {
+			_webSocket = new WebSocketServer (4567);
+			_webSocket.AddWebSocketService<SocketService>("/simulation", () => new SocketService(this.OnSteer) { IgnoreExtensions = true });
+			_webSocket.Start();
+		}
 	}
 
 	// Update is called once per frame
 	void Update()
 	{
+		EmitTelemetry();
+		UpdateCarControl();
 	}
 
-	void OnOpen(SocketIOEvent obj)
-	{
-		Debug.Log("Connection Open");
-	}
-
-
-	void onManual(SocketIOEvent obj)
-	{
-		EmitTelemetry(obj);
-	}
-
-	void OnSteer(SocketIOEvent obj)
-	{
-		JSONObject jsonObject = obj.data;
-		CarRemoteControl.SteeringAngle = float.Parse(jsonObject.GetField("steering_angle").str);
-		print(_carController.CurrentSpeed);
-		print(float.Parse(jsonObject.GetField("throttle").str));
-		if (_carController.CurrentSpeed / _carController.MaxSpeed < float.Parse(jsonObject.GetField("throttle").str)) {
-			print("Smaller");
-			CarRemoteControl.Acceleration = 0.5f;
-		} else {
-			CarRemoteControl.Acceleration = 0.0f;
+	void UpdateCarControl() {
+		if (_controlUpdated) {
+			_controlUpdated = false;
+			CarRemoteControl.SteeringAngle = _steering;
+			if (_carController.CurrentSpeed / _carController.MaxSpeed < _throttle) {
+				CarRemoteControl.Acceleration = 0.5f;
+			} else {
+				CarRemoteControl.Acceleration = 0.0f;
+			}
 		}
-		EmitTelemetry(obj);
 	}
 
-	void EmitTelemetry(SocketIOEvent obj)
+	void OnSteer(float throttle, float steering)
+	{
+		print("Throttle: " + throttle + " Steering: " + steering);
+		this._throttle = throttle;
+		this._steering = steering;
+		this._controlUpdated = true;
+	}
+
+	void EmitTelemetry()
 	{
 		UnityMainThreadDispatcher.Instance().Enqueue(() =>
 		{
-			print("Attempting to Send...");
 			if ((Input.GetKey(KeyCode.W)) || (Input.GetKey(KeyCode.S))) {
 				// Manual mode
 				Dictionary<string, string> data = new Dictionary<string, string>();
@@ -66,7 +67,7 @@ public class CommandServer : MonoBehaviour
 				data["throttle"] = _carController.AccelInput.ToString("N4");
 				data["speed"] = _carController.CurrentSpeed.ToString("N4");
 				data["image"] = Convert.ToBase64String(CameraHelper.CaptureFrame(FrontFacingCamera));
-				_socket.Emit("telemetry", new JSONObject(data));
+				_webSocket.WebSocketServices["/simulation"].Sessions.Broadcast(JsonHandler.FromDictionaryToJson(data));
 			}
 			else {
 				// Autonomous mode
@@ -75,8 +76,9 @@ public class CommandServer : MonoBehaviour
 				data["throttle"] = _carController.AccelInput.ToString("N4");
 				data["speed"] = _carController.CurrentSpeed.ToString("N4");
 				data["image"] = Convert.ToBase64String(CameraHelper.CaptureFrame(FrontFacingCamera));
-				_socket.Emit("telemetry", new JSONObject(data));
+				_webSocket.WebSocketServices["/simulation"].Sessions.Broadcast(JsonHandler.FromDictionaryToJson(data));
 			}
 		});
 	}
+
 }

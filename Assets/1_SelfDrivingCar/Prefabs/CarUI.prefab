@@ -787,11 +787,8 @@ MonoBehaviour:
   MPH_Text: {fileID: 114000013483575810}
   MPH_Animation: {fileID: 114000011568471254}
   Angle_Text: {fileID: 114000011996390452}
-  RecordStatus_Text: {fileID: 0}
   DriveStatus_Text: {fileID: 114239564880395212}
   SaveStatus_Text: {fileID: 0}
-  RecordingPause: {fileID: 0}
-  RecordDisabled: {fileID: 0}
   isTraining: 0
 --- !u!1 &1904088287206378
 GameObject:
