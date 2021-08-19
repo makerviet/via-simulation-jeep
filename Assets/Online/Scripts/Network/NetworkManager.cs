@@ -33,12 +33,16 @@ namespace via.match
         [System.Serializable]
         public class BattleMsgData
         {
+            public int battle_channel = 0;
             public string user_id;       // user_id
             public MsgDefine msg_define = MsgDefine.M00_JoinIn;
             public string data;     // data of battle message
+
+            public bool IsOnBattleChannel => battle_channel == BATTLE_CHANNEL;
         }
 
         const string SERVER_URL = "ws://188.166.221.68/ws/socket";
+        static int BATTLE_CHANNEL = 1;
 
         static NetworkManager Instance;
         static Action OnConnectedListener;
@@ -65,7 +69,7 @@ namespace via.match
 
         public static void Connect(string user_id)
         {
-            if (Instance != null)
+            if (IsExist)
             {
                 Instance.DoConnect(user_id);
             }
@@ -91,7 +95,6 @@ namespace via.match
             // auto ping
         }
 
-
         public static void AddReceiveMsgListener(Action<BattleMsgData> pListener)
         {
             OnReceivedMsgListener -= pListener;
@@ -115,16 +118,18 @@ namespace via.match
                         BattleMsgData battleMsgData = new BattleMsgData()
                         {
                             user_id = coreData.id,
-                            msg_define = MsgDefine.M02_Disconnect,
-                            data = coreData.data
+                            msg_define = MsgDefine.M02_Disconnect//,
+                            //data = coreData.data
                         };
                         OnReceivedMsgListener?.Invoke(battleMsgData);
                     }
                     else
                     {
                         BattleMsgData battleMsgData = JsonUtility.FromJson<BattleMsgData>(coreData.data);
-                        battleMsgData.user_id = coreData.id;
-                        OnReceivedMsgListener?.Invoke(battleMsgData);
+                        if (battleMsgData != null && battleMsgData.IsOnBattleChannel)
+                        {
+                            OnReceivedMsgListener?.Invoke(battleMsgData);
+                        }
                     }
                 }
             }
@@ -143,7 +148,15 @@ namespace via.match
             OnConnectedListener?.Invoke();
         }
 
-        public void DoStopConnect()
+        public static void StopConnect()
+        {
+            if (IsExist)
+            {
+                Instance.DoStopConnect();
+            }
+        }
+
+        void DoStopConnect()
         {
             try
             {
@@ -160,13 +173,23 @@ namespace via.match
             }
         }
 
-        public void DoSendMessage(string user_id, string msg_data)
+        public static void SendMessage(string user_id, MsgDefine msgDefine, string msg_data)
+        {
+            if (IsExist)
+            {
+                Instance.DoSendMessage(user_id, msgDefine, msg_data);
+            }
+        }
+
+        void DoSendMessage(string user_id, MsgDefine msgDefine, string msg_data)
         {
             MessageData data = new MessageData();
-            data.type = "test_send";
+            data.type = "battle";
 
             BattleMsgData battleMsgData = new BattleMsgData();
-            battleMsgData.msg_define = MsgDefine.M00_JoinIn;
+            battleMsgData.battle_channel = BATTLE_CHANNEL;
+            battleMsgData.user_id = user_id;
+            battleMsgData.msg_define = msgDefine;
             battleMsgData.data = msg_data;
 
             CoreData coreData = new CoreData();
