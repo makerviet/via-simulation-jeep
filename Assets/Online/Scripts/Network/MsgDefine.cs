@@ -7,6 +7,7 @@ namespace via.match
         M00_JoinIn = 0,
         M01_KickOut = 1,
         M02_Disconnect = 2,
+        M03_UpdateTeamList = 3,
 
         M10_StartBattle = 10,
         M11_UpdatePos = 11,

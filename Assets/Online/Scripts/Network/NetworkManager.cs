@@ -67,12 +67,22 @@ namespace via.match
             }
         }
 
+        private void Start()
+        {
+            UnityThread.initUnityThread();
+        }
+
         public static void Connect(string user_id)
         {
             if (IsExist)
             {
                 Instance.DoConnect(user_id);
             }
+        }
+
+        private void OnDestroy()
+        {
+            DoStopConnect();
         }
 
         void DoConnect(string user_id)
@@ -128,6 +138,7 @@ namespace via.match
                         BattleMsgData battleMsgData = JsonUtility.FromJson<BattleMsgData>(coreData.data);
                         if (battleMsgData != null && battleMsgData.IsOnBattleChannel)
                         {
+                            Debug.LogError("Msg On channel");
                             OnReceivedMsgListener?.Invoke(battleMsgData);
                         }
                     }
