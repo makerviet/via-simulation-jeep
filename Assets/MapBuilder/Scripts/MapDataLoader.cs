@@ -25,6 +25,7 @@ public class MapDataLoader : MonoBehaviour
     [SerializeField] MapAllData mapAllDatas;
     [SerializeField] List<MapAsset> defaultMapAssets = new List<MapAsset>();
 
+    public static List<MapAsset> fixedMapAssets => (Instance != null)? Instance.defaultMapAssets : new List<MapAsset>();
     //[Header("Debug")]
     //[SerializeField] List<MapData> defaultMapDatas = new List<MapData>();
 

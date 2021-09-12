@@ -39,6 +39,7 @@ public class WorldMapBuilder : MonoBehaviour
     [SerializeField] Image miniMapCarIcon;
 
     [Header("Debug")]
+    [SerializeField] bool m_IsLoadedMap = false;
     [SerializeField] MapData mapData;
     [SerializeField] List<MapCellData> listCellDatas;
     [SerializeField] List<MapSignData> listSignDatas;
@@ -131,6 +132,7 @@ public class WorldMapBuilder : MonoBehaviour
     public void GenMap(Vector2Int mapSize, List<MapCellData> cellDatas, Vector2 neoOffset,
         List<MapSignData> signDatas)
     {
+        m_IsLoadedMap = false;
         foreach (var cell in listCells)
         {
             GameObject.Destroy(cell.gameObject);
@@ -152,6 +154,8 @@ public class WorldMapBuilder : MonoBehaviour
             var posOnRoot = new Vector3(posCol * cellSize, 0, posRow * cellSize);
             transform.position = car.position - posOnRoot;
         }
+
+        m_IsLoadedMap = true;
     }
 
     void CreateSignObjs(List<MapSignData> signDatas)
@@ -221,4 +225,9 @@ public class WorldMapBuilder : MonoBehaviour
         }
         return signModels[0];
     }
+
+    public float mapWidth => cellSize* mapData.map_size.x;
+    public float mapHeight => cellSize * mapData.map_size.y;
+    public Vector3 posRoot => root.transform.position;
+    public bool IsLoadedMap => m_IsLoadedMap;
 }
