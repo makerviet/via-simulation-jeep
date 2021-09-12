@@ -36,6 +36,7 @@ public class MenuOnlineTeamSlot : MonoBehaviour
 
     public void OnTeamJoin(string pName, string pId)
     {
+        Debug.LogError(string.Format("Teamp {0} Join at slot {1}", pName, name));
         this.gameObject.SetActive(true);
         this._teamId = pId;
         teamNameText.text = pName;
