@@ -5,28 +5,31 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/1_SelfDrivingCar/Scenes/LauncherScene.unity
     guid: 122bdeaec1483475b8fc97c588c07408
-  - enabled: 1
+  - enabled: 0
     path: Assets/1_SelfDrivingCar/Scenes/MenuScene.unity
     guid: 4f9ad3000a46342c395e5d94cebb50a8
-  - enabled: 1
+  - enabled: 0
     path: Assets/1_SelfDrivingCar/Scenes/ControlMenu.unity
     guid: 30ccdbcde5c1b3c4ebee6e6257a9fad9
-  - enabled: 1
+  - enabled: 0
     path: Assets/MapBuilder/Scenes/LowPolyRoad/Tiled.unity
     guid: 047d3ab56364f42719938e0fc778d7aa
-  - enabled: 1
+  - enabled: 0
     path: Assets/1_SelfDrivingCar/Scenes/DesignMapAutonomous.unity
     guid: 68809f3bdf0ade68b95012a2c0fcd3b7
   - enabled: 0
     path: 
     guid: 00000000000000000000000000000000
   - enabled: 1
+    path: Assets/Online/Scenes/MenuOverall.unity
+    guid: f44c5d86ad7534b2fa82460895643845
+  - enabled: 1
     path: Assets/Online/Scenes/Client/MenuOnline_Client.unity
     guid: 0fe2d8cb94a5b45a99f73ce3bc2876df
-  - enabled: 1
+  - enabled: 0
     path: Assets/Online/Scenes/ConnectSample.unity
     guid: 2cdc3820076514659990afb037ee8796
   - enabled: 1
