@@ -86,7 +86,7 @@ public class TileSetController : MonoBehaviour
 
     void OnTileSetSelected(int cellId)
     {
-        Debug.LogError("OnTileSet Selected " + cellId);
+        Debug.LogWarning("OnTileSet Selected " + cellId);
         onDelMode = false;
         selectingCellId = cellId;
         curRot = 0;

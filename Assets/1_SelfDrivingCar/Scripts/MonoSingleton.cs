@@ -21,7 +21,7 @@ public abstract class MonoSingleton<T> : MonoBehaviour where T : MonoSingleton<T
                     // Problem during the creation, this should not happen
                     if (m_Instance == null)
                     {
-                        Debug.LogError("Problem during the creation of " + typeof(T).ToString());
+                        Debug.LogWarning("Problem during the creation of " + typeof(T).ToString());
                     }
                 }
                 m_Instance.Init();

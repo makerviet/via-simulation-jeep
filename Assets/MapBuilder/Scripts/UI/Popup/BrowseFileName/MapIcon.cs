@@ -58,7 +58,7 @@ public class MapIcon : MonoBehaviour
         WWW www = new WWW(path);
         yield return www;
         rawImage.texture = www.texture;
-        Debug.LogError("Loaded Icon of map " + path);
+        Debug.LogWarning("Loaded Icon of map " + path);
     }
 
     void OnButtonClicked()

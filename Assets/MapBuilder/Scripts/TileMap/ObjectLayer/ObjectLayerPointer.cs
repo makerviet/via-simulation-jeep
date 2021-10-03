@@ -54,13 +54,13 @@ public class ObjectLayerPointer : MonoBehaviour
 
     public void OnSelected(TrafficSignObject pObject)
     {
-        Debug.LogError("OnSelected obj " + pObject.name);
+        Debug.LogWarning("OnSelected obj " + pObject.name);
         if (selectingObject != null && pObject != selectingObject)
         {
             selectingObject.OnUnSelect();
         }
 
-        Debug.LogError("Setup new obj with rot = " + pObject.Rotation);
+        Debug.LogWarning("Setup new obj with rot = " + pObject.Rotation);
         this.selectingObject = pObject;
         this.rotationSlider.value = pObject.Rotation;
     }
@@ -86,7 +86,7 @@ public class ObjectLayerPointer : MonoBehaviour
 
     void OnBeginDrag(int pointerId, Vector2 screenPos, int mouseId)
     {
-        Debug.LogError("On Begin Drag " + screenPos);
+        Debug.LogWarning("On Begin Drag " + screenPos);
         if (mouseId != 0)
         {
             return;
@@ -117,7 +117,7 @@ public class ObjectLayerPointer : MonoBehaviour
 
     void OnBeginDragX(int pointerId, Vector2 screenPos, int mouseId)
     {
-        Debug.LogError("On Begin Drag " + screenPos);
+        Debug.LogWarning("On Begin Drag " + screenPos);
         if (mouseId != 0)
         {
             return;
@@ -151,7 +151,7 @@ public class ObjectLayerPointer : MonoBehaviour
 
     void OnBeginDragY(int pointerId, Vector2 screenPos, int mouseId)
     {
-        Debug.LogError("On Begin Drag " + screenPos);
+        Debug.LogWarning("On Begin Drag " + screenPos);
         if (mouseId != 0)
         {
             return;

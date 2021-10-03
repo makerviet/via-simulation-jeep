@@ -155,7 +155,7 @@ public class BrowseMapPopup : MonoBehaviour
             }
         }
 
-        Debug.LogError("Selected map id = " + mapId + " map name = " + mapName);
+        Debug.LogWarning("Selected map id = " + mapId + " map name = " + mapName);
         inputName.text = mapName;
     }
 

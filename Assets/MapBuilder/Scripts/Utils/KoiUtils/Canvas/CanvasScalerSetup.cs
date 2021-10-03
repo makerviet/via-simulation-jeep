@@ -79,7 +79,7 @@ namespace Koi.UI
             }
 
             canvasScaler.referenceResolution = curSize;
-            //Debug.LogError("Setup to " + curSize);
+            //Debug.LogWarning("Setup to " + curSize);
         }
     }
 }

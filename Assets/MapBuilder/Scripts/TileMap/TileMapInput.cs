@@ -83,7 +83,7 @@ public class TileMapInput : MonoBehaviour
 
     void OnPointerDown(int pointerId, Vector2 screenPos, int mouseId)
     {
-        Debug.LogError("On Pointer Down " + screenPos);
+        Debug.LogWarning("On Pointer Down " + screenPos);
         if (mouseId == 1)
         {
             OnRightMouseClickListener?.Invoke();
@@ -97,7 +97,7 @@ public class TileMapInput : MonoBehaviour
 
     void OnBeginDrag(int pointerId, Vector2 screenPos, int mouseId)
     {
-        Debug.LogError("On Begin Drag " + screenPos);
+        Debug.LogWarning("On Begin Drag " + screenPos);
         if (mouseId != 0)
         {
             return;
