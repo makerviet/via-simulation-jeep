@@ -29,7 +29,15 @@ public class BrowseMapPopup : MonoBehaviour
 
     private void Awake()
     {
-        Instance = this;
+        if (Instance == null)
+        {
+            Instance = this;
+            GameObject.DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            GameObject.DestroyImmediate(gameObject);
+        }
     }
 
     private void Start()
