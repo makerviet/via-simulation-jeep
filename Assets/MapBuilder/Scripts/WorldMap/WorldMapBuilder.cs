@@ -31,6 +31,7 @@ public class WorldMapBuilder : MonoBehaviour
     [SerializeField] float cellSize = 1.0f;
 
     [SerializeField] Transform car;
+    [SerializeField] RoadGoal roadGoal;
 
     [SerializeField] bool autoLoadMap;
 
@@ -153,6 +154,9 @@ public class WorldMapBuilder : MonoBehaviour
             float posRow = neoOffset.y - mapSize.y * 0.5f;
             var posOnRoot = new Vector3(posCol * cellSize, 0, posRow * cellSize);
             transform.position = car.position - posOnRoot;
+
+            roadGoal.gameObject.SetActive(true);
+            roadGoal.transform.position = car.transform.position;
         }
 
         m_IsLoadedMap = true;

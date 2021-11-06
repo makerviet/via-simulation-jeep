@@ -18,6 +18,8 @@ public class CarRemoteControl : MonoBehaviour
     public Camera FrontFacingCamera;
     [SerializeField] CarControlState m_CarControlState = CarControlState.S0_Prepare;
 
+    [SerializeField] int totalLap = 2;
+
     public float SteeringAngle { get; set; }
     public float Acceleration { get; set; }
     private Steering s;
@@ -25,6 +27,9 @@ public class CarRemoteControl : MonoBehaviour
     private float _throttle = 0;
     private float _steering = 0;
     private bool _controlUpdated = false;
+
+    [SerializeField] int finishedLap = 0;
+    [SerializeField] GameObject gameOver;
 
     private void Awake()
     {
@@ -55,6 +60,41 @@ public class CarRemoteControl : MonoBehaviour
     public void StopControl()
     {
         m_CarControlState = CarControlState.S2_OnStop;
+    }
+
+    public void OnReachGoal(Transform goal, Vector3 goalDirect)
+    {
+        if (m_CarControlState != CarControlState.S1_OnControl)
+        {
+            return;
+        }
+
+        var directFromCar = goal.position - transform.position;
+
+        if (directFromCar.magnitude > 1 && Vector3.Dot(goalDirect, directFromCar) > 0)
+        {
+            finishedLap++;
+            Debug.LogError("Finished lap " + finishedLap);
+            if (finishedLap >= totalLap)
+            {
+                gameOver.SetActive(true);
+                m_CarControlState = CarControlState.S2_OnStop;
+            }
+        }
+    }
+
+    public void OnReachCheckPoint(RoadCheckpoint pCheckpoint)
+    {
+        Debug.LogError("Reach Checkpoint " + pCheckpoint.name);
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.S) && Input.GetKey(KeyCode.T)
+            && m_CarControlState == CarControlState.S0_Prepare)
+        {
+            StartControl();
+        }
     }
 
     void UpdateCarControl()

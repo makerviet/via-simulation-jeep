@@ -23,6 +23,14 @@ public class MapData
         public float rot;
     }
 
+    public class RoadCheckPointData
+    {
+        public int order_id;
+        public Vector2 pos;
+        public float rot;
+        public int score;
+    }
+
     //[System.Serializable]
     //public class MapLayerData
     //{
