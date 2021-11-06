@@ -21,9 +21,10 @@ public class ObjectLayerPointer : MonoBehaviour
     [SerializeField] RectDrag center;
     [SerializeField] Slider rotationSlider;
 
+    [Header("Debug")]
     [SerializeField] State m_state = State.S0_Idle;
 
-    [SerializeField] TrafficSignObject selectingObject;
+    [SerializeField] TrafficSignObject m_SelectingObject;
 
     void Start()
     {
@@ -49,35 +50,36 @@ public class ObjectLayerPointer : MonoBehaviour
 
     void OnRotChanged(float pValue)
     {
-        selectingObject?.UpdateRot(pValue);
+        m_SelectingObject?.UpdateRot(pValue);
     }
 
     public void OnSelected(TrafficSignObject pObject)
     {
         Debug.LogError("OnSelected obj " + pObject.name);
-        if (selectingObject != null && pObject != selectingObject)
+        if (m_SelectingObject != null && pObject != m_SelectingObject)
         {
-            selectingObject.OnUnSelect();
+            m_SelectingObject.OnUnSelect();
         }
 
         Debug.LogError("Setup new obj with rot = " + pObject.Rotation);
-        this.selectingObject = pObject;
+        this.m_SelectingObject = pObject;
         this.rotationSlider.value = pObject.Rotation;
     }
 
     public void OnUnSelected()
     {
-        if (selectingObject != null)
+        if (m_SelectingObject != null)
         {
-            selectingObject.OnUnSelect();
+            m_SelectingObject.OnUnSelect();
+            m_SelectingObject = null;
         }
     }
 
     void UpdateSelectingObjectPos()
     {
-        if (selectingObject != null)
+        if (m_SelectingObject != null)
         {
-            selectingObject.transform.position = root.position;
+            m_SelectingObject.transform.position = root.position;
         }   
     }
 
@@ -206,4 +208,7 @@ public class ObjectLayerPointer : MonoBehaviour
             return m_canvas;
         }
     }
+
+    public bool OnSelecting => m_SelectingObject != null;
+    public TrafficSignObject SelectingObject => m_SelectingObject;
 }

@@ -250,17 +250,10 @@ public class TileMapController : MonoBehaviour
             return;
         }
         currentMapName = map_name;
-        OnGenMapClicked();
+        
+        OnGenMapClicked();  // gen map to take screenshot
 
-        var mapData = new MapData()
-        {
-            bg_id = bgId,
-            map_size = mapSize,
-            cell_datas = listCells,
-            car_pos = carPos,
-            map_name = currentMapName,
-            sign_obj_datas = trafficSignMapGenerator.GetMapObjDatas(cellSize, neoCell)
-        };
+        var mapData = BuildMapData(currentMapName);
         mapData.CleanNullCell();
         string jsonData = JsonUtility.ToJson(mapData);
         Debug.LogError("" + jsonData);
@@ -269,6 +262,19 @@ public class TileMapController : MonoBehaviour
 
         StartCoroutine(SaveMapData(mapData));
         //string path = Application.persistentDataPath
+    }
+
+    MapData BuildMapData(string pMapName)
+    {
+        return new MapData()
+        {
+            bg_id = bgId,
+            map_size = mapSize,
+            cell_datas = listCells,
+            car_pos = carPos,
+            map_name = pMapName,
+            sign_obj_datas = trafficSignMapGenerator.GetMapObjDatas(cellSize, neoCell)
+        };
     }
 
     IEnumerator SaveMapData(MapData mapData)
@@ -303,14 +309,7 @@ public class TileMapController : MonoBehaviour
     void OnGenMapClicked()
     {
         //worldMapBuilder.GenMap(mapSize, listCells, Vector2.one);
-        var mapData = new MapData() {
-            bg_id = bgId,
-            map_size = mapSize,
-            cell_datas = listCells,
-            car_pos = carPos,
-
-            sign_obj_datas = trafficSignMapGenerator.GetMapObjDatas(cellSize, neoCell)
-        };
+        var mapData = BuildMapData("");
         worldMapBuilder.GenMap(mapData);
     }
 

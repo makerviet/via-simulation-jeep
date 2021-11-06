@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 public class TileSetController : MonoBehaviour
 {
+
+    // TileId, rot, image
     Action<int, int, Image> OnTileSelectedListener;
 
     [SerializeField] TileMapInput controlInput;
@@ -14,7 +16,10 @@ public class TileSetController : MonoBehaviour
     [SerializeField] Button delButton;
 
     [SerializeField] RectTransform selectBorder;
+
+    [Header("Debug")]
     [SerializeField] List<TileSetCell> tileSetCells = new List<TileSetCell>();
+    [SerializeField] TileSetCell selectingCell;
     [SerializeField] int selectingCellId = 0;
 
     [SerializeField] int curRot = 0;
@@ -81,25 +86,27 @@ public class TileSetController : MonoBehaviour
 
     void CallbackTileSelected()
     {
-        OnTileSelectedListener?.Invoke(selectingCellId, curRot, tileSetCells[selectingCellId].iconImage);
+        OnTileSelectedListener?.Invoke(selectingCellId, curRot, selectingCell.iconImage);
     }
 
-    void OnTileSetSelected(int cellId)
+    void OnTileSetSelected(TileSetCell cell)
     {
-        Debug.LogError("OnTileSet Selected " + cellId);
+        selectingCell = cell;
+        int tileId = cell.TileId;
+        Debug.LogError("OnTileSet Selected " + tileId);
         onDelMode = false;
-        selectingCellId = cellId;
+        selectingCellId = tileId;
         curRot = 0;
 
         // update visible here
         for (int i = 0; i < tileSetCells.Count; i++)
         {
-            tileSetCells[i].SetSelectState(i == cellId);
+            tileSetCells[i].SetSelectState(tileSetCells[i] == cell);
         }
 
         // update select border position
-        selectBorder.anchoredPosition = tileSetCells[cellId].rectTransform.anchoredPosition;
-        var borderSize = tileSetCells[cellId].iconSize;
+        selectBorder.anchoredPosition = cell.rectTransform.anchoredPosition;
+        var borderSize = cell.iconSize;
         selectBorder.sizeDelta = new Vector2(borderSize.x + 18, borderSize.y + 18);
 
         CallbackTileSelected();
