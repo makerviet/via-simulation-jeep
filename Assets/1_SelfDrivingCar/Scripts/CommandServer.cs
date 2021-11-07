@@ -1,51 +1,86 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
-using WebSocketSharp;
-using WebSocketSharp.Server;
 using UnityStandardAssets.Vehicles.Car;
 using System;
+using System.Text;  
 using System.Security.AccessControl;
+using HybridWebSocket;
 
 public class CommandServer : MonoBehaviour
 {
 	private static CommandServer Instance;
 
     #region socket
-    private static WebSocketServer _webSocket;
+    private static WebSocket _webSocket = null;
     #endregion
 
     #region control on simulator
 	[Header("Debug")]
     public Camera FrontFacingCamera;
-	public CarRemoteControl CarRemoteControl;
-	//private CarController _carController;
+		public CarRemoteControl CarRemoteControl;
     #endregion
 
-    
-
-    private void Awake()
-    {
-		if (Instance == null)
-		{
-			Instance = this;
-			GameObject.DontDestroyOnLoad(this.gameObject);
-		}
-		else
-		{
-			GameObject.DestroyImmediate(this.gameObject);
-		}
-    }
-
-    // Use this for initialization
-    void Start()
+	private void Awake()
 	{
-		//_carController = CarRemoteControl.GetComponent<CarController>();
-		if (_webSocket == null) {
-			_webSocket = new WebSocketServer (4567);
-			_webSocket.AddWebSocketService<SocketService>("/simulation", () => new SocketService(this.OnSteer) { IgnoreExtensions = true });
-			_webSocket.Start();
-		}
+	if (Instance == null)
+	{
+		Instance = this;
+		GameObject.DontDestroyOnLoad(this.gameObject);
+	}
+	else
+	{
+		GameObject.DestroyImmediate(this.gameObject);
+	}
+	}
+
+	// Use this for initialization
+	void Start() {
+
+		// Create WebSocket instance
+		_webSocket = WebSocketFactory.CreateInstance("ws://127.0.0.1:4567");
+
+		// Add OnOpen event listener
+		_webSocket.OnOpen += () => {
+				Debug.LogWarning("WS connected!");
+				Debug.LogWarning("WS state: " + _webSocket.GetState().ToString());	
+		};
+
+		// Add OnMessage event listener
+		_webSocket.OnMessage += (byte[] msg) => {
+			try {
+				// Debug.LogWarning("WS received message: " + Encoding.UTF8.GetString(msg));
+				string receivedString = Encoding.UTF8.GetString(msg);
+        Debug.Log("Received message! - " + receivedString);
+        Dictionary<string, string> data = JsonHandler.FromJsonToDictionary(receivedString);
+				if (!data.ContainsKey("throttle")) {
+						Debug.Log("Missing throttle value in message!");
+						return;
+				}
+				if (!data.ContainsKey("steering")) {
+						Debug.Log("Missing steering value in message!");
+						return;
+				}
+				float throttle = float.Parse(data["throttle"]);
+				float steering = float.Parse(data["steering"]);
+				OnSteer(throttle, steering);
+			} catch (Exception ex) {
+				Debug.LogWarning(ex.ToString());
+			}
+		};
+
+		// Add OnError event listener
+		_webSocket.OnError += (string errMsg) => {
+				Debug.LogWarning("WS error: " + errMsg);
+		};
+
+		// Add OnClose event listener
+		_webSocket.OnClose += (WebSocketCloseCode code) => {
+				Debug.LogWarning("WS closed with code: " + code.ToString());
+		};
+
+		// Connect to the server
+		_webSocket.Connect();
 	}
 
 	public static void RegisterSimulator(CarRemoteControl pCarRemoteController, Camera pFrontFacingCamera)
@@ -103,7 +138,16 @@ public class CommandServer : MonoBehaviour
 				data["throttle"] = CarRemoteControl.AccelInput.ToString("N4");
 				data["speed"] = CarRemoteControl.CurrentSpeed.ToString("N4");
 				data["image"] = Convert.ToBase64String(CameraHelper.CaptureFrame(FrontFacingCamera));
-				_webSocket.WebSocketServices["/simulation"].Sessions.Broadcast(JsonHandler.FromDictionaryToJson(data));
+				try {
+					byte[] bytes = Encoding.UTF8.GetBytes(JsonHandler.FromDictionaryToJson(data));  
+					_webSocket.Send(bytes);
+				}
+					catch (Exception ex)
+				{
+					Debug.LogWarning(ex.ToString());
+					Debug.LogWarning("Sent failed. Trying to reconnect....");
+					_webSocket.Connect();
+				}
 			}
 			else {
 				// Autonomous mode
@@ -112,7 +156,16 @@ public class CommandServer : MonoBehaviour
 				data["throttle"] = CarRemoteControl.AccelInput.ToString("N4");
 				data["speed"] = CarRemoteControl.CurrentSpeed.ToString("N4");
 				data["image"] = Convert.ToBase64String(CameraHelper.CaptureFrame(FrontFacingCamera));
-				_webSocket.WebSocketServices["/simulation"].Sessions.Broadcast(JsonHandler.FromDictionaryToJson(data));
+				try {
+					byte[] bytes = Encoding.UTF8.GetBytes(JsonHandler.FromDictionaryToJson(data));  
+					_webSocket.Send(bytes);
+				}
+					catch (Exception ex)
+				{
+					Debug.LogWarning(ex.ToString());       
+					Debug.LogWarning("Sent failed. Trying to reconnect....");
+					_webSocket.Connect();  
+				}
 			}
 		});
 	}

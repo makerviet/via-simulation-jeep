@@ -160,7 +160,7 @@ public class TileMapController : MonoBehaviour
         {
             return;
         }
-        Debug.LogError("Load Map: " + map_name);
+        Debug.LogWarning("Load Map: " + map_name);
         MapData mapData = MapDataLoader.DataOfMap(map_name, isDefaultMap);
         // convert data to map
         OnClearMap();
@@ -171,7 +171,7 @@ public class TileMapController : MonoBehaviour
     IEnumerator DoLoadCreateMap(MapData mapData)
     {
         yield return null;
-        Debug.LogError("MapData: = " + JsonUtility.ToJson(mapData));
+        Debug.LogWarning("MapData: = " + JsonUtility.ToJson(mapData));
 
         OnMapBgChanged(mapData.bg_id);
 
@@ -181,7 +181,7 @@ public class TileMapController : MonoBehaviour
         for (int i = 0; i < cellDatas.Count; i++)
         {
             var cell = cellDatas[i];
-            Debug.LogError("Draw cell " + i + JsonUtility.ToJson(cell));
+            Debug.LogWarning("Draw cell " + i + JsonUtility.ToJson(cell));
             if (cell.tile_id < 0)
             {
                 continue;
@@ -256,7 +256,7 @@ public class TileMapController : MonoBehaviour
         var mapData = BuildMapData(currentMapName);
         mapData.CleanNullCell();
         string jsonData = JsonUtility.ToJson(mapData);
-        Debug.LogError("" + jsonData);
+        Debug.LogWarning("" + jsonData);
         //MapData.SaveInstantMapJson(jsonData);
 
 
@@ -345,7 +345,7 @@ public class TileMapController : MonoBehaviour
     void OnLayerSelected(MapLayer pMapLayer)
     {
         currentLayer = pMapLayer;
-        Debug.LogError("select layer " + pMapLayer.ToString());
+        Debug.LogWarning("select layer " + pMapLayer.ToString());
 
         mapInput.SwitchLayer(currentLayer);
 

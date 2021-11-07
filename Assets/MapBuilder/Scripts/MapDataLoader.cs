@@ -164,7 +164,7 @@ public class MapDataLoader : MonoBehaviour
     {
         byte[] bytes = texure.EncodeToJPG();
         File.WriteAllBytes(fullPath, bytes);
-        Debug.LogError("Save success to " + fullPath);
+        Debug.LogWarning("Save success to " + fullPath);
     }
 
 

@@ -93,7 +93,7 @@ public class TileSetController : MonoBehaviour
     {
         selectingCell = cell;
         int tileId = cell.TileId;
-        Debug.LogError("OnTileSet Selected " + tileId);
+        Debug.LogWarning("OnTileSet Selected " + tileId);
         onDelMode = false;
         selectingCellId = tileId;
         curRot = 0;

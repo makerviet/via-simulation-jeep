@@ -78,13 +78,13 @@ public class MapObjectLayerGenerator : MonoBehaviour
             return;
         }
 
-        Debug.LogError("Left click at Traffic Sign Mode");
+        Debug.LogWarning("Left click at Traffic Sign Mode");
         Vector2 localPoint;
         bool onMap = RectTransformUtility.ScreenPointToLocalPointInRectangle(signRoot, Input.mousePosition, canvas.worldCamera, out localPoint);
 
         if (onMap)
         {
-            Debug.LogError("Left click on map");
+            Debug.LogWarning("Left click on map");
             bool IsSelectOnSign = false;
             TrafficSignObject signObject = null;
 
@@ -100,7 +100,7 @@ public class MapObjectLayerGenerator : MonoBehaviour
                     signObject = signObj;
                     signObj.OnSelected();
                     IsSelectOnSign = true;
-                    Debug.LogError("Found sign obj " + signObj.name + " debugPos " + debugPoint);
+                    Debug.LogWarning("Found sign obj " + signObj.name + " debugPos " + debugPoint);
                     break;
                 }
             }
@@ -109,7 +109,7 @@ public class MapObjectLayerGenerator : MonoBehaviour
             // push on map
             if (!IsSelectOnSign && m_state == MapObjectState.S2_Drawing)
             {
-                Debug.LogError("NOT Found sign obj, create new");
+                Debug.LogWarning("NOT Found sign obj, create new");
                 TrafficSignRes res = ResourceOfSign(pointerSignId);
                 signObject = Instantiate(res.trafficSignPrefab, signRoot);
                 if (signObject.SignType == TrafficSignType.S99_Score)
@@ -128,13 +128,13 @@ public class MapObjectLayerGenerator : MonoBehaviour
                 signObject.OnSelected();
             }
 
-            Debug.LogError("Setup for Pointer");
+            Debug.LogWarning("Setup for Pointer");
             if (signObject != null)
             {
                 trafficSignPointer.gameObject.SetActive(true);
                 trafficSignPointer.OnSelected(signObject);
                 trafficSignPointer.transform.position = signObject.transform.position;
-                Debug.LogError("Setup for Pointer Done");
+                Debug.LogWarning("Setup for Pointer Done");
 
                 m_state = MapObjectState.S1_Selecting;
             }

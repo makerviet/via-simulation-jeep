@@ -58,7 +58,7 @@ public class WorldMapBuilder : MonoBehaviour
         }
 
         var savedGamesPath = Application.persistentDataPath + "/";
-        Debug.LogError("DebugPath = " + savedGamesPath);
+        Debug.LogWarning("DebugPath = " + savedGamesPath);
     }
 
     [ContextMenu("Load saved map")]
@@ -116,7 +116,7 @@ public class WorldMapBuilder : MonoBehaviour
         WWW www = new WWW(path);
         yield return www;
         miniMap.texture = www.texture;
-        Debug.LogError("Loaded Icon of map " + path);
+        Debug.LogWarning("Loaded Icon of map " + path);
     }
 
     public void GenMap(MapData mapData)

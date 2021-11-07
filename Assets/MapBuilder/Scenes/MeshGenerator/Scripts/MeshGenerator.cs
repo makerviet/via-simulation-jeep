@@ -35,7 +35,7 @@ public class MeshGenerator : MonoBehaviour
     void DoWriteAllMeshFile()
     {
         string path = string.Format("Assets/Resources/Export/{0}_allmesh.obj", model_name);
-        Debug.LogError("Path: " + path);
+        Debug.LogWarning("Path: " + path);
         //yield return null;
         System.IO.StreamWriter write = new System.IO.StreamWriter(path, true);
         string output = StringOfMainBoard();
@@ -45,12 +45,12 @@ public class MeshGenerator : MonoBehaviour
         output += borderOutput;
 
         //yield return null;
-        Debug.LogError("Main Plane datas");
-        Debug.LogError("Write to file: " + path);
+        Debug.LogWarning("Main Plane datas");
+        Debug.LogWarning("Write to file: " + path);
         write.Write(output);
         write.Close();
         //yield return null;
-        Debug.LogError("Write done!");
+        Debug.LogWarning("Write done!");
     }
 
     string StringOfBorder(int startId)
@@ -136,19 +136,19 @@ public class MeshGenerator : MonoBehaviour
     void DoWriteCenterFile()
     {
         string path = string.Format("Assets/Resources/Export/{0}_center.obj", model_name);
-        Debug.LogError("Path: " + path);
+        Debug.LogWarning("Path: " + path);
         //yield return null;
         System.IO.StreamWriter write = new System.IO.StreamWriter(path, true);
 
         var output = StringOfMainBoard();
 
         //yield return null;
-        Debug.LogError("Main Plane datas");
-        Debug.LogError("Write to file: " + path);
+        Debug.LogWarning("Main Plane datas");
+        Debug.LogWarning("Write to file: " + path);
         write.Write(output);
         write.Close();
         //yield return null;
-        Debug.LogError("Write done!");
+        Debug.LogWarning("Write done!");
     }
 
     string StringOfMainBoard()
@@ -162,7 +162,7 @@ public class MeshGenerator : MonoBehaviour
             var pos = verts[i].position;
             output += string.Format("v {0} {1} {2}\n", -pos.x, pos.y, pos.z);
         }
-        Debug.LogError("Main Vert datas");
+        Debug.LogWarning("Main Vert datas");
 
         output += "\ns off\n";
         string mainPlane = "f ";
