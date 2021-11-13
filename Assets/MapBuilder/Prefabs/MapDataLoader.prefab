@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4238987081245089314}
   - component: {fileID: 4238987081245089315}
+  - component: {fileID: 1517749634361326879}
   m_Layer: 0
   m_Name: MapDataLoader
   m_TagString: Untagged
@@ -79,6 +80,18 @@ MonoBehaviour:
     anchor_offset: {x: 0, y: 0}
     car_pos: {x: 0, y: 0}
     sign_obj_datas: []
+--- !u!114 &1517749634361326879
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4238987081245089312}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b121ec9e3a11426eb7fdbf20a45f46a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &2371935821292102690
 PrefabInstance:
   m_ObjectHideFlags: 0

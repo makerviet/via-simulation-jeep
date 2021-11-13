@@ -98,10 +98,10 @@ public class MapDataLoader : MonoBehaviour
         }
         if (noneTextureMapData != null)
         {
-            Debug.LogError("Gen texture for map[ " + (countCheckMapTexture - 1) + "], name = " + noneTextureMapData.map_name);
+            Debug.LogWarning("Gen texture for map[ " + (countCheckMapTexture - 1) + "], name = " + noneTextureMapData.map_name);
             GenMapTexture(noneTextureMapData, (texture) =>
             {
-                Debug.LogError("Save Texture for map " + noneTextureMapData.map_name);
+                Debug.LogWarning("Save Texture for map " + noneTextureMapData.map_name);
                 SaveTextureToJPG(texture, texturePath);
 
                 CheckMapTexture();
@@ -160,7 +160,7 @@ public class MapDataLoader : MonoBehaviour
         return texturePath;
     }
 
-    static void SaveTextureToJPG(Texture2D texure, string fullPath)
+    public static void SaveTextureToJPG(Texture2D texure, string fullPath)
     {
         byte[] bytes = texure.EncodeToJPG();
         File.WriteAllBytes(fullPath, bytes);
@@ -202,7 +202,6 @@ public class MapDataLoader : MonoBehaviour
         tex.Apply();
         return tex;
     }
-
 
     public static MapData instanceMapData => Instance.currentMapdata;
 
