@@ -11,8 +11,9 @@ public enum TrafficSignType
     
     S02_Turn_Right = 2,
     S03_No_Turn_Right = 3,
-    S04_Stop = 4,
 
+    S04_Stop = 4,
+    S05_Straight = 5,
 
     S99_Score = 999,
 }
