@@ -29,6 +29,7 @@ public class CarRemoteControl : MonoBehaviour
     private bool _controlUpdated = false;
 
     [SerializeField] int finishedLap = 0;
+    [SerializeField] bool trainingMode = false;
     [SerializeField] GameObject gameOver;
 
     private void Awake()
@@ -75,7 +76,7 @@ public class CarRemoteControl : MonoBehaviour
         {
             finishedLap++;
             Debug.LogError("Finished lap " + finishedLap);
-            if (finishedLap >= totalLap)
+            if (finishedLap >= totalLap && !trainingMode)
             {
                 gameOver.SetActive(true);
                 m_CarControlState = CarControlState.S2_OnStop;

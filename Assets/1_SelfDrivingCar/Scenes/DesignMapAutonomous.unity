@@ -518,6 +518,11 @@ PrefabInstance:
       objectReference: {fileID: 688414128}
     - target: {fileID: 3542218422660223278, guid: 7d2c9378d753b4199914d240c4c8f432,
         type: 3}
+      propertyPath: trainingMode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3542218422660223278, guid: 7d2c9378d753b4199914d240c4c8f432,
+        type: 3}
       propertyPath: FrontFacingCamera
       value: 
       objectReference: {fileID: 581243074}
@@ -675,6 +680,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1022337077}
+  - component: {fileID: 1022337078}
   m_Layer: 0
   m_Name: World
   m_TagString: Untagged
@@ -701,6 +707,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1022337078
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1022337076}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 88cb7506f71314c529caa4610f6b2470, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mCar: {fileID: 581243075}
 --- !u!1001 &1034937897
 PrefabInstance:
   m_ObjectHideFlags: 0
