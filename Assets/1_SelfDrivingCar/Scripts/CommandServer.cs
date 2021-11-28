@@ -51,8 +51,8 @@ public class CommandServer : MonoBehaviour
 			try {
 				// Debug.LogWarning("WS received message: " + Encoding.UTF8.GetString(msg));
 				string receivedString = Encoding.UTF8.GetString(msg);
-        Debug.Log("Received message! - " + receivedString);
-        Dictionary<string, string> data = JsonHandler.FromJsonToDictionary(receivedString);
+				Debug.Log("Received message! - " + receivedString);
+				Dictionary<string, string> data = JsonHandler.FromJsonToDictionary(receivedString);
 				if (!data.ContainsKey("throttle")) {
 						Debug.Log("Missing throttle value in message!");
 						return;
@@ -129,6 +129,15 @@ public class CommandServer : MonoBehaviour
 			return;
 		}
 
+		if (_webSocket.GetState() == WebSocketState.Closed) {
+			_webSocket.Connect();
+			return;
+		} else if (_webSocket.GetState() != WebSocketState.Open) {
+			// If websocket is in waiting states (Opening, Closing), 
+			// skip to wait it to go to Closed
+			return;
+		}
+
 		UnityMainThreadDispatcher.Instance().Enqueue(() =>
 		{
 			if ((Input.GetKey(KeyCode.W)) || (Input.GetKey(KeyCode.S))) {
@@ -146,7 +155,7 @@ public class CommandServer : MonoBehaviour
 				{
 					Debug.LogWarning(ex.ToString());
 					Debug.LogWarning("Sent failed. Trying to reconnect....");
-					_webSocket.Connect();
+					_webSocket.Close();
 				}
 			}
 			else {
@@ -164,7 +173,7 @@ public class CommandServer : MonoBehaviour
 				{
 					Debug.LogWarning(ex.ToString());       
 					Debug.LogWarning("Sent failed. Trying to reconnect....");
-					_webSocket.Connect();  
+					_webSocket.Close();
 				}
 			}
 		});
