@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -85,7 +86,19 @@ public class MapDataLoader : MonoBehaviour
                 string path = PathOfMap(mapData.map_name);
                 if (!string.IsNullOrEmpty(path))
                 {
-                    if (!System.IO.File.Exists(path))
+                    bool exist = false;
+                    try
+                    {
+                        if (System.IO.File.Exists(path))
+                        {
+                            exist = true;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                    }
+
+                    if (!exist)
                     {
                         countCheckMapTexture = i + 1;
                         texturePath = path;
@@ -94,7 +107,6 @@ public class MapDataLoader : MonoBehaviour
                     }
                 }
             }
-
         }
         if (noneTextureMapData != null)
         {
@@ -102,7 +114,14 @@ public class MapDataLoader : MonoBehaviour
             GenMapTexture(noneTextureMapData, (texture) =>
             {
                 Debug.LogWarning("Save Texture for map " + noneTextureMapData.map_name);
-                SaveTextureToJPG(texture, texturePath);
+                try
+                {
+                    noneTextureMapData.texture = texture;
+                    SaveTextureToJPG(texture, texturePath);
+                }
+                catch (System.Exception ex)
+                {
+                }
 
                 CheckMapTexture();
             });
@@ -142,6 +161,7 @@ public class MapDataLoader : MonoBehaviour
         {
             mapAllDatas.map_datas[id] = mapdata;
         }
+        mapdata.texture = mapTexture;
 
         string dirPath = string.Format("{0}{1}", Application.persistentDataPath, "/map/");
         if (!Directory.Exists(dirPath))
@@ -191,6 +211,7 @@ public class MapDataLoader : MonoBehaviour
         var texture2D = ToTexture2D(tempMapRenderTexture);
         yield return null;
         tempWorldMapBuilder.gameObject.SetActive(false);
+        mapData.texture = texture2D;
         callback?.Invoke(texture2D);
     }
 
@@ -208,7 +229,14 @@ public class MapDataLoader : MonoBehaviour
     public static void SetInstanceMapData(MapData pMapData, Texture pMapTexture)
     {
         Instance.currentMapdata = pMapData;
-        Instance.currentMapdataTexture = pMapTexture;
+        if (pMapTexture != null)
+        {
+            Instance.currentMapdataTexture = pMapTexture;
+        }
+        else
+        {
+            Instance.currentMapdataTexture = pMapData.texture;
+        }
     }
 
     public static Texture TextureOfDefaultMap(string mapId)

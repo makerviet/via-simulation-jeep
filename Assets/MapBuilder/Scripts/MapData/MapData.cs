@@ -42,6 +42,8 @@ public class MapData
     #region data
     public string map_name;
     public string map_create_id => map_name;
+    public Texture texture;
+
 
     public int bg_id;
 
