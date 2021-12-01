@@ -287,7 +287,10 @@ public class MapDataLoader : MonoBehaviour
         return null;
     }
 
-
+    public static string JsonOfCurrentMap()
+    {
+        return JsonUtility.ToJson(Instance.currentMapdata);
+    }
 
 
 
