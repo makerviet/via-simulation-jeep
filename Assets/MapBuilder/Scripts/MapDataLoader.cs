@@ -163,15 +163,21 @@ public class MapDataLoader : MonoBehaviour
         }
         mapdata.texture = mapTexture;
 
-        string dirPath = string.Format("{0}{1}", Application.persistentDataPath, "/map/");
-        if (!Directory.Exists(dirPath))
+        try
         {
-            Directory.CreateDirectory(dirPath);
-        }
-        string texturePath = string.Format("{0}{1}.jpg", dirPath, mapdata.map_name);
-        SaveTextureToJPG(mapTexture, texturePath);
+            string dirPath = string.Format("{0}{1}", Application.persistentDataPath, "/map/");
+            if (!Directory.Exists(dirPath))
+            {
+                Directory.CreateDirectory(dirPath);
+            }
+            string texturePath = string.Format("{0}{1}.jpg", dirPath, mapdata.map_name);
+            SaveTextureToJPG(mapTexture, texturePath);
 
-        SaveData();
+            SaveData();
+        }
+        catch (Exception ex)
+        {
+        }
     }
 
     public static string PathOfMap(string mapName)
@@ -182,9 +188,15 @@ public class MapDataLoader : MonoBehaviour
 
     public static void SaveTextureToJPG(Texture2D texure, string fullPath)
     {
-        byte[] bytes = texure.EncodeToJPG();
-        File.WriteAllBytes(fullPath, bytes);
-        Debug.LogWarning("Save success to " + fullPath);
+        try
+        {
+            byte[] bytes = texure.EncodeToJPG();
+            File.WriteAllBytes(fullPath, bytes);
+            Debug.LogWarning("Save success to " + fullPath);
+        }
+        catch (Exception ex)
+        {
+        }
     }
 
 

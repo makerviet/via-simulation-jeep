@@ -231,10 +231,13 @@ MonoBehaviour:
     prefab: {fileID: 7304312472454140428, guid: 39ea9b494750b4cf9bc98e9d48dca0ad,
       type: 3}
   - sign_type: 2
-    prefab: {fileID: 4336417304334420986, guid: 9d1fa3e5e671e4bd69860d82317ebf6d,
+    prefab: {fileID: 8367401818015225931, guid: 1d5b6668d544f43e5862c4b5c44bb924,
       type: 3}
   - sign_type: 3
     prefab: {fileID: 3020911611425532210, guid: 0956e4cfa79114df0bcf7fcb7b16d59a,
+      type: 3}
+  - sign_type: 999
+    prefab: {fileID: 4336417304334420986, guid: 9d1fa3e5e671e4bd69860d82317ebf6d,
       type: 3}
   root: {fileID: 2560514073578275012}
   cellRoot: {fileID: 4657369110033753671}
@@ -248,6 +251,7 @@ MonoBehaviour:
   m_IsLoadedMap: 0
   mapData:
     map_name: 
+    texture: {fileID: 0}
     bg_id: 0
     map_size: {x: 10, y: 10}
     cell_datas: []

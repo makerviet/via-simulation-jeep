@@ -3185,11 +3185,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1407780516565156304, guid: 8e76e29a4ca394eadb4cf97b0d5a91c9,
-        type: 3}
-      propertyPath: signModels.Array.data[2].sign_type
-      value: 999
-      objectReference: {fileID: 0}
     - target: {fileID: 3584070728697396341, guid: 8e76e29a4ca394eadb4cf97b0d5a91c9,
         type: 3}
       propertyPath: m_RootOrder

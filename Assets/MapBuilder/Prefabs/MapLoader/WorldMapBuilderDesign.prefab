@@ -200,14 +200,30 @@ PrefabInstance:
       objectReference: {fileID: 6768350883615510083}
     - target: {fileID: 2560514073543283873, guid: b3955d8039d3b456ab0a61bd6f3ce8b5,
         type: 3}
+      propertyPath: signModels.Array.size
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2560514073543283873, guid: b3955d8039d3b456ab0a61bd6f3ce8b5,
+        type: 3}
       propertyPath: signModels.Array.data[2].prefab
+      value: 
+      objectReference: {fileID: 8367401818015225931, guid: 1d5b6668d544f43e5862c4b5c44bb924,
+        type: 3}
+    - target: {fileID: 2560514073543283873, guid: b3955d8039d3b456ab0a61bd6f3ce8b5,
+        type: 3}
+      propertyPath: signModels.Array.data[4].prefab
       value: 
       objectReference: {fileID: 4336417304334420986, guid: 9d1fa3e5e671e4bd69860d82317ebf6d,
         type: 3}
     - target: {fileID: 2560514073543283873, guid: b3955d8039d3b456ab0a61bd6f3ce8b5,
         type: 3}
       propertyPath: signModels.Array.data[2].sign_type
-      value: 99
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2560514073543283873, guid: b3955d8039d3b456ab0a61bd6f3ce8b5,
+        type: 3}
+      propertyPath: signModels.Array.data[4].sign_type
+      value: 999
       objectReference: {fileID: 0}
     - target: {fileID: 2560514073543283879, guid: b3955d8039d3b456ab0a61bd6f3ce8b5,
         type: 3}
