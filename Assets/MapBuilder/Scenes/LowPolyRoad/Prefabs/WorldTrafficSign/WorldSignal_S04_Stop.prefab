@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4289497805913961940}
   - component: {fileID: 1526273613025911174}
   - component: {fileID: 5116641405862497215}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Sign_blank
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -106,7 +106,7 @@ GameObject:
   - component: {fileID: 7788991694866667225}
   - component: {fileID: 2826165528366625905}
   - component: {fileID: 6256563653840196802}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Cylinder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -200,7 +200,7 @@ GameObject:
   - component: {fileID: 5741911230018413059}
   - component: {fileID: 2462663400807891221}
   - component: {fileID: 8312460068467995479}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Sign
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -292,7 +292,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2457792987822271288}
   - component: {fileID: 5044355862819879877}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: WorldSignal_S04_Stop
   m_TagString: Untagged
   m_Icon: {fileID: 0}

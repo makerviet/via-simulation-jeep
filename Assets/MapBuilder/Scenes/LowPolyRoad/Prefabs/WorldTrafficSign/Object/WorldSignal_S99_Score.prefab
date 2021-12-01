@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4336417304334420986}
   - component: {fileID: 5335901191399922063}
   - component: {fileID: 3666067226764781575}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: WorldSignal_S99_Score
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -88,7 +88,7 @@ GameObject:
   - component: {fileID: 7165860434199394311}
   - component: {fileID: 5933415399614497406}
   - component: {fileID: 9212439816556350920}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Quad
   m_TagString: Untagged
   m_Icon: {fileID: 0}

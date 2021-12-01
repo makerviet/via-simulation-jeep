@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2738109381084628930}
   - component: {fileID: 816987430209016720}
   - component: {fileID: 6447213209418611113}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Sign_blank
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -106,7 +106,7 @@ GameObject:
   - component: {fileID: 8241836714878411983}
   - component: {fileID: 4125406030988854887}
   - component: {fileID: 5236326271153383124}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Cylinder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -200,7 +200,7 @@ GameObject:
   - component: {fileID: 5897377580515168277}
   - component: {fileID: 4347608812768064259}
   - component: {fileID: 7864171270034686273}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Sign
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -292,7 +292,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4351385221349824814}
   - component: {fileID: 6375349470865836499}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: WorldSignal_S05_Straight
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5648379207878405016}
   - component: {fileID: 379308181891483952}
   - component: {fileID: 8406209659625957763}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Cylinder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -106,7 +106,7 @@ GameObject:
   - component: {fileID: 1872450556151466133}
   - component: {fileID: 3987222343465540807}
   - component: {fileID: 7312414664364193534}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Sign_blank
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -198,7 +198,7 @@ GameObject:
   m_Component:
   - component: {fileID: 27243598082872953}
   - component: {fileID: 7240163901973464708}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: WorldSignal_S00_TurnLeft
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -251,7 +251,7 @@ GameObject:
   - component: {fileID: 7914022516185063234}
   - component: {fileID: 24276167128726612}
   - component: {fileID: 5845907883439607318}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Sign
   m_TagString: Untagged
   m_Icon: {fileID: 0}
