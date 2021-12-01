@@ -16,8 +16,9 @@ public class DesignMapAutonomousController : MonoBehaviour
         for (int i = 3; i >= 1; i--)
         {
             // 
-            yield return new WaitForSeconds(1);
+            //yield return new WaitForSeconds(1);
         }
+        yield return null;
 
         mCar.StartControl();
     }
