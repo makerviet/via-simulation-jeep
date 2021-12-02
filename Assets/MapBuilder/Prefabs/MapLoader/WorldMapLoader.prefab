@@ -236,6 +236,12 @@ MonoBehaviour:
   - sign_type: 3
     prefab: {fileID: 3020911611425532210, guid: 0956e4cfa79114df0bcf7fcb7b16d59a,
       type: 3}
+  - sign_type: 4
+    prefab: {fileID: 5044355862819879877, guid: 6e0c8ff2597904cf880580e9b8a653ca,
+      type: 3}
+  - sign_type: 5
+    prefab: {fileID: 6375349470865836499, guid: 54662dd87f7834c119e4cf4d6e25549a,
+      type: 3}
   - sign_type: 999
     prefab: {fileID: 4336417304334420986, guid: 9d1fa3e5e671e4bd69860d82317ebf6d,
       type: 3}
