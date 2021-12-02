@@ -49,7 +49,7 @@ GameObject:
   - component: {fileID: 6438455740738808384}
   - component: {fileID: 2446004265657108016}
   m_Layer: 0
-  m_Name: Spot Light
+  m_Name: Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -62,13 +62,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1346134543580711244}
-  m_LocalRotation: {x: 0.03463773, y: -0.000097028125, z: 0.0027995345, w: 0.999396}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0, y: 0.72, z: 0.05}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1512356226059756211}
   m_RootOrder: 7
-  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!108 &2446004265657108016
 Light:
   m_ObjectHideFlags: 0
@@ -78,10 +78,10 @@ Light:
   m_GameObject: {fileID: 1346134543580711244}
   m_Enabled: 1
   serializedVersion: 10
-  m_Type: 0
+  m_Type: 1
   m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 8
+  m_Intensity: 1.5
   m_Range: 26
   m_SpotAngle: 60
   m_InnerSpotAngle: 4
