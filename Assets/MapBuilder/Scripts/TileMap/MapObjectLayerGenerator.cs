@@ -70,6 +70,28 @@ public class MapObjectLayerGenerator : MonoBehaviour
         trafficSignPointer.gameObject.SetActive(false);
     }
 
+    public void ClearMap()
+    {
+        trafficSignPointer.OnUnSelected();
+        m_state = MapObjectState.S1_Selecting;
+        trafficSignPointer.gameObject.SetActive(false);
+
+        for (int i = trafficSignObjects.Count - 1; i >= 0; i--)
+        {
+            var obj = trafficSignObjects[i];
+            trafficSignObjects.RemoveAt(i);
+            GameObject.DestroyImmediate(obj.gameObject);
+        }
+        for (int i = roadCheckpoints.Count - 1; i >= 0; i--)
+        {
+            var obj = roadCheckpoints[i];
+            roadCheckpoints.RemoveAt(i);
+            GameObject.DestroyImmediate(obj.gameObject);
+        }
+
+        m_SelectingObject = null;
+    }
+
 
     void OnLeftClick(Vector2 screenPos)
     {
@@ -149,8 +171,10 @@ public class MapObjectLayerGenerator : MonoBehaviour
 
     void OnTrafficSignTileSelected(int signId, int id, Image pImage)
     {
-        if (pointerSignId != -1)
+        //Debug.LogError("TrafficSIgn Tile Select " + signId + " id " + id);
+        if (signId != -1)
         {
+            //Debug.LogError("Traffic Sign Select");
             pointerSignId = signId;
             if (IsActing)
             {
@@ -159,24 +183,26 @@ public class MapObjectLayerGenerator : MonoBehaviour
         }
         else if (IsSelecting)
         {
+            //Debug.LogError("Traffic Sign Remove");
             if (m_SelectingObject != null)
             {
                 // remove selecting cell
                 trafficSignPointer.OnUnSelected();
-                m_state = MapObjectState.S0_Idle;
+                m_state = MapObjectState.S1_Selecting;
+                trafficSignPointer.gameObject.SetActive(false);
                 var selectingObj = m_SelectingObject;
 
                 if (trafficSignObjects.Contains(selectingObj))
                 {
                     //unuseTrafficSignObjects.Add(selectingObj);
                     trafficSignObjects.Remove(selectingObj);
-                    GameObject.DestroyImmediate(selectingObj);
+                    GameObject.DestroyImmediate(selectingObj.gameObject);
                 }
                 else if (roadCheckpoints.Contains(selectingObj))
                 {
                     //unuseRoadCheckpoints.Add(selectingObj);
                     roadCheckpoints.Remove(selectingObj);
-                    GameObject.DestroyImmediate(selectingObj);
+                    GameObject.DestroyImmediate(selectingObj.gameObject);
                     RefreshRoadCheckpontsList();
                 }
 

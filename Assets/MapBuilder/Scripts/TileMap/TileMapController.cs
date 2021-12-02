@@ -29,16 +29,12 @@ public class TileMapController : MonoBehaviour
     [SerializeField] MapLayer currentLayer = MapLayer.TileMap;
     [SerializeField] LayerSelector layerSelector;
 
+    #region map_setup
     [Header("Map Setup")]
     [SerializeField] Canvas canvas;
     [SerializeField] TileMapInput mapInput;
-
-
-    
     [SerializeField] TileSetController tileSetController;
-
     [SerializeField] MapObjectLayerGenerator trafficSignMapGenerator;
-
 
     [SerializeField] Vector2 cellSize = Vector2.one * 100.0f;
     [SerializeField] Vector2 neoCell = Vector2.one * 50.0f;
@@ -49,7 +45,9 @@ public class TileMapController : MonoBehaviour
     [SerializeField] TileSetBgSelector bgSelector;
     [SerializeField] Image bg;
     [SerializeField] List<Sprite> bgSprites;
+    #endregion
 
+    #region ui_input
     [Header("control")]
     [SerializeField] Button clear;
     [SerializeField] Button genMapButton;
@@ -59,11 +57,12 @@ public class TileMapController : MonoBehaviour
     [SerializeField] Button loadMapButton;
     [SerializeField] Button saveAsButton;
     [SerializeField] Button saveMapButton;
-
+    #endregion
 
     [SerializeField] WorldMapBuilder worldMapBuilder;
 
-    [Header("Debug")]
+    #region debug_field
+    [Header("----------------- Debug -----------------")]
     [SerializeField] string currentMapName = "";
     [SerializeField] int bgId = 0;
     [SerializeField] Vector2Int mapSize = new Vector2Int(12, 10);
@@ -77,6 +76,7 @@ public class TileMapController : MonoBehaviour
     [SerializeField] int pointerTileId;
     [SerializeField] int tileRot;
     [SerializeField] Vector2 carPos;
+    #endregion
 
     void Start()
     {
@@ -292,6 +292,8 @@ public class TileMapController : MonoBehaviour
         {
             listCells[i].tile_id = -1;
         }
+
+        trafficSignMapGenerator.ClearMap();
     }
 
     void ClearCellIcons()

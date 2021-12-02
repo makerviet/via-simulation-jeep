@@ -14,6 +14,7 @@ public class TileSetController : MonoBehaviour
 
     [SerializeField] Button rotateButton;
     [SerializeField] Button delButton;
+    [SerializeField] bool useDelMode = true;
 
     [SerializeField] RectTransform selectBorder;
 
@@ -67,14 +68,21 @@ public class TileSetController : MonoBehaviour
 
     void OnDelClicked()
     {
-        onDelMode = !onDelMode;
-        if (onDelMode)
+        if (useDelMode)
         {
-            OnTileSelectedListener?.Invoke(-1, 0, null);
+            onDelMode = !onDelMode;
+            if (onDelMode)
+            {
+                OnTileSelectedListener?.Invoke(-1, 0, null);
+            }
+            else
+            {
+                CallbackTileSelected();
+            }
         }
         else
         {
-            CallbackTileSelected();
+            OnTileSelectedListener?.Invoke(-1, 0, null);
         }
     }
 
@@ -86,7 +94,7 @@ public class TileSetController : MonoBehaviour
 
     void CallbackTileSelected()
     {
-        OnTileSelectedListener?.Invoke(selectingCellId, curRot, selectingCell.iconImage);
+        OnTileSelectedListener?.Invoke(selectingCellId, curRot, selectingCell? selectingCell.iconImage : null);
     }
 
     void OnTileSetSelected(TileSetCell cell)

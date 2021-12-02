@@ -133,7 +133,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 1
   cellId: 5
-  signId: 99
+  signId: 999
 --- !u!1 &1315632785
 GameObject:
   m_ObjectHideFlags: 0
@@ -1628,6 +1628,7 @@ MonoBehaviour:
   controlInput: {fileID: 0}
   rotateButton: {fileID: 0}
   delButton: {fileID: 0}
+  useDelMode: 0
   selectBorder: {fileID: 8336888837495687442}
   tileSetCells:
   - {fileID: 1315632787}
@@ -1834,7 +1835,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 8336888838790437077}
   m_Direction: 2
   m_Value: 1
-  m_Size: 0.6495164
+  m_Size: 0
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
