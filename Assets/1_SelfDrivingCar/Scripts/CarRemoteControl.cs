@@ -47,7 +47,9 @@ public class CarRemoteControl : MonoBehaviour
 
     public void UpdateSteering(float steering, float throttle)
     {
+        #if !UNITY_WEBGL
         print("Throttle: " + throttle + " Steering: " + steering);
+        #endif
         this._throttle = throttle;
         this._steering = steering;
         this._controlUpdated = true;

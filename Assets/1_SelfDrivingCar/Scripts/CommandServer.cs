@@ -5,7 +5,7 @@ using UnityStandardAssets.Vehicles.Car;
 using System;
 using System.Text;  
 using System.Security.AccessControl;
-using HybridWebSocket;
+using NativeWebSocket;
 
 public class CommandServer : MonoBehaviour
 {
@@ -13,6 +13,7 @@ public class CommandServer : MonoBehaviour
 
     #region socket
     private static WebSocket _webSocket = null;
+	long _nextBoundTime = 0;
     #endregion
 
     #region control on simulator
@@ -34,53 +35,56 @@ public class CommandServer : MonoBehaviour
 	}
 	}
 
-	// Use this for initialization
-	void Start() {
 
+	void InitWebSocket() {
 		// Create WebSocket instance
 		_webSocket = WebSocketFactory.CreateInstance("ws://127.0.0.1:4567");
 
 		// Add OnOpen event listener
 		_webSocket.OnOpen += () => {
-				Debug.LogWarning("WS connected!");
-				Debug.LogWarning("WS state: " + _webSocket.GetState().ToString());	
+			Debug.Log("WS connected!");
+			Debug.Log("WS state: " + _webSocket.State.ToString());	
 		};
 
 		// Add OnMessage event listener
 		_webSocket.OnMessage += (byte[] msg) => {
 			try {
-				// Debug.LogWarning("WS received message: " + Encoding.UTF8.GetString(msg));
+				// Debug.Log("WS received message: " + Encoding.UTF8.GetString(msg));
 				string receivedString = Encoding.UTF8.GetString(msg);
-				Debug.Log("Received message! - " + receivedString);
 				Dictionary<string, string> data = JsonHandler.FromJsonToDictionary(receivedString);
 				if (!data.ContainsKey("throttle")) {
-						Debug.Log("Missing throttle value in message!");
-						return;
+					Debug.Log("Missing throttle value in message!");
+					return;
 				}
 				if (!data.ContainsKey("steering")) {
-						Debug.Log("Missing steering value in message!");
-						return;
+					Debug.Log("Missing steering value in message!");
+					return;
 				}
 				float throttle = float.Parse(data["throttle"]);
 				float steering = float.Parse(data["steering"]);
 				OnSteer(throttle, steering);
 			} catch (Exception ex) {
-				Debug.LogWarning(ex.ToString());
+				Debug.Log(ex.ToString());
 			}
 		};
 
 		// Add OnError event listener
 		_webSocket.OnError += (string errMsg) => {
-				Debug.LogWarning("WS error: " + errMsg);
+			Debug.Log("WS error: " + errMsg);
 		};
 
 		// Add OnClose event listener
 		_webSocket.OnClose += (WebSocketCloseCode code) => {
-				Debug.LogWarning("WS closed with code: " + code.ToString());
+			Debug.Log("WS closed with code: " + code.ToString());
 		};
 
 		// Connect to the server
 		_webSocket.Connect();
+	}
+
+	// Use this for initialization
+	void Start() {
+		InitWebSocket();
 	}
 
 	public static void RegisterSimulator(CarRemoteControl pCarRemoteController, Camera pFrontFacingCamera)
@@ -111,6 +115,9 @@ public class CommandServer : MonoBehaviour
 	// Update is called once per frame
 	void Update()
 	{
+		#if !UNITY_WEBGL || UNITY_EDITOR
+			_webSocket.DispatchMessageQueue();
+		#endif
 		EmitTelemetry();
 	}
 
@@ -129,52 +136,50 @@ public class CommandServer : MonoBehaviour
 			return;
 		}
 
-		if (_webSocket.GetState() == WebSocketState.Closed) {
-			_webSocket.Connect();
+		// Return if waiting for the next status of websocket
+		if (DateTimeOffset.Now.ToUnixTimeMilliseconds() < _nextBoundTime) {
 			return;
-		} else if (_webSocket.GetState() != WebSocketState.Open) {
+		}
+
+		// If websocket is closed, reconnect
+		// Debug.Log(_webSocket.State.ToString());
+		if (_webSocket.State == WebSocketState.Closed) {
+			Debug.Log("Trying to reconnect...");
+			try {
+				_webSocket.Connect();
+			} catch (Exception ex) {
+				InitWebSocket();
+				Debug.Log(ex.ToString());
+			}
+			
+			_nextBoundTime = DateTimeOffset.Now.ToUnixTimeMilliseconds() + 1000; // Wait to connect
+			return;
+		} else if (_webSocket.State != WebSocketState.Open) {
 			// If websocket is in waiting states (Opening, Closing), 
 			// skip to wait it to go to Closed
+			// Debug.Log("Waiting for the next websocket state...");
+			_nextBoundTime = DateTimeOffset.Now.ToUnixTimeMilliseconds() + 500; // Wait to connect
 			return;
 		}
 
 		UnityMainThreadDispatcher.Instance().Enqueue(() =>
 		{
-			if ((Input.GetKey(KeyCode.W)) || (Input.GetKey(KeyCode.S))) {
-				// Manual mode
-				Dictionary<string, string> data = new Dictionary<string, string>();
-				data["steering_angle"] = CarRemoteControl.CurrentSteerAngle.ToString("N4");
-				data["throttle"] = CarRemoteControl.AccelInput.ToString("N4");
-				data["speed"] = CarRemoteControl.CurrentSpeed.ToString("N4");
-				data["image"] = Convert.ToBase64String(CameraHelper.CaptureFrame(FrontFacingCamera));
-				try {
-					byte[] bytes = Encoding.UTF8.GetBytes(JsonHandler.FromDictionaryToJson(data));  
-					_webSocket.Send(bytes);
-				}
-					catch (Exception ex)
-				{
-					Debug.LogWarning(ex.ToString());
-					Debug.LogWarning("Sent failed. Trying to reconnect....");
-					_webSocket.Close();
-				}
+			// if ((Input.GetKey(KeyCode.W)) || (Input.GetKey(KeyCode.S))) {}
+			Dictionary<string, string> data = new Dictionary<string, string>();
+			data["steering_angle"] = CarRemoteControl.CurrentSteerAngle.ToString("N4");
+			data["throttle"] = CarRemoteControl.AccelInput.ToString("N4");
+			data["speed"] = CarRemoteControl.CurrentSpeed.ToString("N4");
+			data["image"] = Convert.ToBase64String(CameraHelper.CaptureFrame(FrontFacingCamera));
+			try {
+				byte[] bytes = Encoding.UTF8.GetBytes(JsonHandler.FromDictionaryToJson(data));  
+				_webSocket.Send(bytes);
 			}
-			else {
-				// Autonomous mode
-				Dictionary<string, string> data = new Dictionary<string, string>();
-				data["steering_angle"] = CarRemoteControl.CurrentSteerAngle.ToString("N4");
-				data["throttle"] = CarRemoteControl.AccelInput.ToString("N4");
-				data["speed"] = CarRemoteControl.CurrentSpeed.ToString("N4");
-				data["image"] = Convert.ToBase64String(CameraHelper.CaptureFrame(FrontFacingCamera));
-				try {
-					byte[] bytes = Encoding.UTF8.GetBytes(JsonHandler.FromDictionaryToJson(data));  
-					_webSocket.Send(bytes);
-				}
-					catch (Exception ex)
-				{
-					Debug.LogWarning(ex.ToString());       
-					Debug.LogWarning("Sent failed. Trying to reconnect....");
-					_webSocket.Close();
-				}
+				catch (Exception ex)
+			{
+				Debug.Log(ex.ToString());       
+				Debug.Log("Sent failed. Closing to reconnect...");
+				_webSocket.Close();
+				_nextBoundTime = DateTimeOffset.Now.ToUnixTimeMilliseconds() + 500;
 			}
 		});
 	}
