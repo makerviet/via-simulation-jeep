@@ -1,5 +1,7 @@
 # VIA Car Simulation
 
+**Update 11/12/2021:** Now you can access this simulator online at: <https://via-sim.makerviet.org/>.
+
 This project is the official simulation for VIA Project: <https://via.makerviet.org/>.
 
 ## Features
