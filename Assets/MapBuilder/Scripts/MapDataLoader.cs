@@ -74,8 +74,13 @@ public class MapDataLoader : MonoBehaviour
     }
 
     int countCheckMapTexture = 0;
+    public bool isCheckingMapTexture = false;
     void CheckMapTexture()
     {
+        if (isCheckingMapTexture)
+        {
+            return;
+        }
         MapData noneTextureMapData = null;
         string texturePath = "";
         for (int i = countCheckMapTexture; i < mapAllDatas.map_datas.Count; i++)
@@ -126,6 +131,10 @@ public class MapDataLoader : MonoBehaviour
                 CheckMapTexture();
             });
         }
+        else
+        {
+            isCheckingMapTexture = false;
+        }
     }
 
     void SaveData()
@@ -135,10 +144,67 @@ public class MapDataLoader : MonoBehaviour
         PlayerPrefs.Save();
     }
 
+
+    public void OnServerDefaultMapLoaded(MapAllData pData)
+    {
+        for (int i = pData.map_datas.Count - 1; i >= 0; i--)
+        {
+            var mapData = pData.map_datas[i];
+            if (!IsExistMap(mapData))
+            {
+                mapAllDatas.map_datas.Insert(0, mapData);
+            }
+        }
+        ReCheckMapTexture();
+    }
+
+    public void OnUserMapLoaded(MapAllData pData)
+    {
+        foreach (var mapData in pData.map_datas)
+        {
+            if (!IsExistMap(mapData))
+            {
+                mapAllDatas.map_datas.Add(mapData);
+            }
+        }
+        ReCheckMapTexture();
+    }
+
+    void ReCheckMapTexture()
+    {
+        countCheckMapTexture = 0;
+        if (!isCheckingMapTexture)
+        {
+            CheckMapTexture();
+        }
+    }
+
+
+    bool IsExistMap(MapData pMapData)
+    {
+        foreach (var map in defaultMaps)
+        {
+            if (map.data.map_create_id.CompareTo(pMapData.map_create_id) == 0)
+            {
+                return true;
+            }
+        }
+        foreach (var map in mapAllDatas.map_datas)
+        {
+            if (map.map_create_id.CompareTo(pMapData.map_create_id) == 0)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
     public static void SaveMap(MapData mapData, Texture2D mapTexture)
     {
         Instance.DoSaveMap(mapData, mapTexture);
         SetInstanceMapData(mapData, mapTexture);
+        PlayfabDataLoader.PostUserMapData(Instance.mapAllDatas);
     }
 
     void DoSaveMap(MapData mapdata, Texture2D mapTexture)
@@ -292,6 +358,12 @@ public class MapDataLoader : MonoBehaviour
         return JsonUtility.ToJson(Instance.currentMapdata);
     }
 
+
+    [ContextMenu("Log All map datas")]
+    void LogAllMapData()
+    {
+        Debug.LogError("" + JsonUtility.ToJson(mapAllDatas));
+    }
 
 
     public List<MapData> allMaps => mapAllDatas.map_datas;
