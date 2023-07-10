@@ -20,4 +20,19 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/1_SelfDrivingCar/Scenes/DesignMapAutonomous.unity
     guid: 68809f3bdf0ade68b95012a2c0fcd3b7
+  - enabled: 1
+    path: Assets/Online/Scenes/MenuOverall.unity
+    guid: f44c5d86ad7534b2fa82460895643845
+  - enabled: 1
+    path: Assets/Online/Scenes/Client/MenuOnline_Client.unity
+    guid: 0fe2d8cb94a5b45a99f73ce3bc2876df
+  - enabled: 1
+    path: Assets/Online/Scenes/Client/OnlineBattleClient.unity
+    guid: 470df1dba0a564be7887dbd0d4e68f9f
+  - enabled: 1
+    path: Assets/Online/Scenes/Host/MenuOnline_Host.unity
+    guid: e0308e78cb45f4be3b9b476ca7f2ad2f
+  - enabled: 1
+    path: Assets/Online/Scenes/Host/OnlineBattleHost.unity
+    guid: 1463d776e071f4cdcb9e73000b6ee89c
   m_configObjects: {}

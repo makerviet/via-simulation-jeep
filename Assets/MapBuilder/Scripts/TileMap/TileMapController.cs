@@ -29,16 +29,12 @@ public class TileMapController : MonoBehaviour
     [SerializeField] MapLayer currentLayer = MapLayer.TileMap;
     [SerializeField] LayerSelector layerSelector;
 
+    #region map_setup
     [Header("Map Setup")]
     [SerializeField] Canvas canvas;
     [SerializeField] TileMapInput mapInput;
-
-
-    
     [SerializeField] TileSetController tileSetController;
-
     [SerializeField] MapObjectLayerGenerator trafficSignMapGenerator;
-
 
     [SerializeField] Vector2 cellSize = Vector2.one * 100.0f;
     [SerializeField] Vector2 neoCell = Vector2.one * 50.0f;
@@ -49,7 +45,9 @@ public class TileMapController : MonoBehaviour
     [SerializeField] TileSetBgSelector bgSelector;
     [SerializeField] Image bg;
     [SerializeField] List<Sprite> bgSprites;
+    #endregion
 
+    #region ui_input
     [Header("control")]
     [SerializeField] Button clear;
     [SerializeField] Button genMapButton;
@@ -59,11 +57,12 @@ public class TileMapController : MonoBehaviour
     [SerializeField] Button loadMapButton;
     [SerializeField] Button saveAsButton;
     [SerializeField] Button saveMapButton;
-
+    #endregion
 
     [SerializeField] WorldMapBuilder worldMapBuilder;
 
-    [Header("Debug")]
+    #region debug_field
+    [Header("----------------- Debug -----------------")]
     [SerializeField] string currentMapName = "";
     [SerializeField] int bgId = 0;
     [SerializeField] Vector2Int mapSize = new Vector2Int(12, 10);
@@ -77,6 +76,7 @@ public class TileMapController : MonoBehaviour
     [SerializeField] int pointerTileId;
     [SerializeField] int tileRot;
     [SerializeField] Vector2 carPos;
+    #endregion
 
     void Start()
     {
@@ -160,7 +160,7 @@ public class TileMapController : MonoBehaviour
         {
             return;
         }
-        Debug.LogError("Load Map: " + map_name);
+        Debug.LogWarning("Load Map: " + map_name);
         MapData mapData = MapDataLoader.DataOfMap(map_name, isDefaultMap);
         // convert data to map
         OnClearMap();
@@ -171,7 +171,7 @@ public class TileMapController : MonoBehaviour
     IEnumerator DoLoadCreateMap(MapData mapData)
     {
         yield return null;
-        Debug.LogError("MapData: = " + JsonUtility.ToJson(mapData));
+        Debug.LogWarning("MapData: = " + JsonUtility.ToJson(mapData));
 
         OnMapBgChanged(mapData.bg_id);
 
@@ -181,7 +181,7 @@ public class TileMapController : MonoBehaviour
         for (int i = 0; i < cellDatas.Count; i++)
         {
             var cell = cellDatas[i];
-            Debug.LogError("Draw cell " + i + JsonUtility.ToJson(cell));
+            Debug.LogWarning("Draw cell " + i + JsonUtility.ToJson(cell));
             if (cell.tile_id < 0)
             {
                 continue;
@@ -250,25 +250,31 @@ public class TileMapController : MonoBehaviour
             return;
         }
         currentMapName = map_name;
-        OnGenMapClicked();
+        
+        OnGenMapClicked();  // gen map to take screenshot
 
-        var mapData = new MapData()
-        {
-            bg_id = bgId,
-            map_size = mapSize,
-            cell_datas = listCells,
-            car_pos = carPos,
-            map_name = currentMapName,
-            sign_obj_datas = trafficSignMapGenerator.GetMapObjDatas(cellSize, neoCell)
-        };
+        var mapData = BuildMapData(currentMapName);
         mapData.CleanNullCell();
         string jsonData = JsonUtility.ToJson(mapData);
-        Debug.LogError("" + jsonData);
+        Debug.LogWarning("" + jsonData);
         //MapData.SaveInstantMapJson(jsonData);
 
 
         StartCoroutine(SaveMapData(mapData));
         //string path = Application.persistentDataPath
+    }
+
+    MapData BuildMapData(string pMapName)
+    {
+        return new MapData()
+        {
+            bg_id = bgId,
+            map_size = mapSize,
+            cell_datas = listCells,
+            car_pos = carPos,
+            map_name = pMapName,
+            sign_obj_datas = trafficSignMapGenerator.GetMapObjDatas(cellSize, neoCell)
+        };
     }
 
     IEnumerator SaveMapData(MapData mapData)
@@ -286,6 +292,8 @@ public class TileMapController : MonoBehaviour
         {
             listCells[i].tile_id = -1;
         }
+
+        trafficSignMapGenerator.ClearMap();
     }
 
     void ClearCellIcons()
@@ -303,14 +311,7 @@ public class TileMapController : MonoBehaviour
     void OnGenMapClicked()
     {
         //worldMapBuilder.GenMap(mapSize, listCells, Vector2.one);
-        var mapData = new MapData() {
-            bg_id = bgId,
-            map_size = mapSize,
-            cell_datas = listCells,
-            car_pos = carPos,
-
-            sign_obj_datas = trafficSignMapGenerator.GetMapObjDatas(cellSize, neoCell)
-        };
+        var mapData = BuildMapData("");
         worldMapBuilder.GenMap(mapData);
     }
 
@@ -346,7 +347,7 @@ public class TileMapController : MonoBehaviour
     void OnLayerSelected(MapLayer pMapLayer)
     {
         currentLayer = pMapLayer;
-        Debug.LogError("select layer " + pMapLayer.ToString());
+        Debug.LogWarning("select layer " + pMapLayer.ToString());
 
         mapInput.SwitchLayer(currentLayer);
 

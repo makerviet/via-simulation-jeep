@@ -33,8 +33,12 @@ public class MapObjectLayerGenerator : MonoBehaviour
 
     [Header("Debug")]
     [SerializeField] MapObjectState m_state = MapObjectState.S0_Idle;
+    [SerializeField] TrafficSignObject m_SelectingObject;
     [SerializeField] List<TrafficSignObject> trafficSignObjects = new List<TrafficSignObject>();
-    [SerializeField] List<TrafficSignObject> unuseTrafficSignObjects = new List<TrafficSignObject>();
+    //[SerializeField] List<TrafficSignObject> unuseTrafficSignObjects = new List<TrafficSignObject>();
+
+    [SerializeField] List<TrafficSignObject> roadCheckpoints = new List<TrafficSignObject>();
+    //[SerializeField] List<TrafficSignObject> unuseRoadCheckpoints = new List<TrafficSignObject>();
 
     [SerializeField] int pointerSignId;
 
@@ -66,6 +70,28 @@ public class MapObjectLayerGenerator : MonoBehaviour
         trafficSignPointer.gameObject.SetActive(false);
     }
 
+    public void ClearMap()
+    {
+        trafficSignPointer.OnUnSelected();
+        m_state = MapObjectState.S1_Selecting;
+        trafficSignPointer.gameObject.SetActive(false);
+
+        for (int i = trafficSignObjects.Count - 1; i >= 0; i--)
+        {
+            var obj = trafficSignObjects[i];
+            trafficSignObjects.RemoveAt(i);
+            GameObject.DestroyImmediate(obj.gameObject);
+        }
+        for (int i = roadCheckpoints.Count - 1; i >= 0; i--)
+        {
+            var obj = roadCheckpoints[i];
+            roadCheckpoints.RemoveAt(i);
+            GameObject.DestroyImmediate(obj.gameObject);
+        }
+
+        m_SelectingObject = null;
+    }
+
 
     void OnLeftClick(Vector2 screenPos)
     {
@@ -74,13 +100,13 @@ public class MapObjectLayerGenerator : MonoBehaviour
             return;
         }
 
-        Debug.LogError("Left click at Traffic Sign Mode");
+        Debug.LogWarning("Left click at Traffic Sign Mode");
         Vector2 localPoint;
         bool onMap = RectTransformUtility.ScreenPointToLocalPointInRectangle(signRoot, Input.mousePosition, canvas.worldCamera, out localPoint);
 
         if (onMap)
         {
-            Debug.LogError("Left click on map");
+            Debug.LogWarning("Left click on map");
             bool IsSelectOnSign = false;
             TrafficSignObject signObject = null;
 
@@ -96,7 +122,7 @@ public class MapObjectLayerGenerator : MonoBehaviour
                     signObject = signObj;
                     signObj.OnSelected();
                     IsSelectOnSign = true;
-                    Debug.LogError("Found sign obj " + signObj.name + " debugPos " + debugPoint);
+                    Debug.LogWarning("Found sign obj " + signObj.name + " debugPos " + debugPoint);
                     break;
                 }
             }
@@ -105,22 +131,32 @@ public class MapObjectLayerGenerator : MonoBehaviour
             // push on map
             if (!IsSelectOnSign && m_state == MapObjectState.S2_Drawing)
             {
-                Debug.LogError("NOT Found sign obj, create new");
+                Debug.LogWarning("NOT Found sign obj, create new");
                 TrafficSignRes res = ResourceOfSign(pointerSignId);
                 signObject = Instantiate(res.trafficSignPrefab, signRoot);
-                trafficSignObjects.Add(signObject);
+                if (signObject.SignType == TrafficSignType.S99_Score)
+                {
+                    roadCheckpoints.Add(signObject);
+                    int order = roadCheckpoints.Count;
+                    signObject.GetComponent<RoadCheckpointObject>().SetupOrder(order);
+                }
+                else
+                {
+                    trafficSignObjects.Add(signObject);
+                }
+                
                 signObject.name = signObject.name + (signObject.transform.parent.childCount + 1);
                 signObject.transform.localPosition = localPoint;
                 signObject.OnSelected();
             }
 
-            Debug.LogError("Setup for Pointer");
+            Debug.LogWarning("Setup for Pointer");
             if (signObject != null)
             {
                 trafficSignPointer.gameObject.SetActive(true);
                 trafficSignPointer.OnSelected(signObject);
                 trafficSignPointer.transform.position = signObject.transform.position;
-                Debug.LogError("Setup for Pointer Done");
+                Debug.LogWarning("Setup for Pointer Done");
 
                 m_state = MapObjectState.S1_Selecting;
             }
@@ -129,15 +165,57 @@ public class MapObjectLayerGenerator : MonoBehaviour
                 trafficSignPointer.OnUnSelected();
                 trafficSignPointer.gameObject.SetActive(false);
             }
+            m_SelectingObject = signObject;
         }
     }
 
     void OnTrafficSignTileSelected(int signId, int id, Image pImage)
     {
-        pointerSignId = signId;
-        if (IsActing)
+        //Debug.LogError("TrafficSIgn Tile Select " + signId + " id " + id);
+        if (signId != -1)
         {
-            m_state = MapObjectState.S2_Drawing;
+            //Debug.LogError("Traffic Sign Select");
+            pointerSignId = signId;
+            if (IsActing)
+            {
+                m_state = MapObjectState.S2_Drawing;
+            }
+        }
+        else if (IsSelecting)
+        {
+            //Debug.LogError("Traffic Sign Remove");
+            if (m_SelectingObject != null)
+            {
+                // remove selecting cell
+                trafficSignPointer.OnUnSelected();
+                m_state = MapObjectState.S1_Selecting;
+                trafficSignPointer.gameObject.SetActive(false);
+                var selectingObj = m_SelectingObject;
+
+                if (trafficSignObjects.Contains(selectingObj))
+                {
+                    //unuseTrafficSignObjects.Add(selectingObj);
+                    trafficSignObjects.Remove(selectingObj);
+                    GameObject.DestroyImmediate(selectingObj.gameObject);
+                }
+                else if (roadCheckpoints.Contains(selectingObj))
+                {
+                    //unuseRoadCheckpoints.Add(selectingObj);
+                    roadCheckpoints.Remove(selectingObj);
+                    GameObject.DestroyImmediate(selectingObj.gameObject);
+                    RefreshRoadCheckpontsList();
+                }
+
+                m_SelectingObject = null;
+            }
+        }
+    }
+
+    void RefreshRoadCheckpontsList()
+    {
+        for (int i = 0; i < roadCheckpoints.Count; i++)
+        {
+            roadCheckpoints[i].GetComponent<RoadCheckpointObject>().SetupOrder(i + 1);
         }
     }
 
@@ -150,6 +228,26 @@ public class MapObjectLayerGenerator : MonoBehaviour
             data.sign_id = (int)signObj.SignType;
             data.rot = signObj.Rotation;
             data.pos = signObj.transform.localPosition;
+            data.pos.x = (data.pos.x - neoCell.x) / mapCellDesignSize.x;
+            data.pos.y = (data.pos.y - neoCell.y) / mapCellDesignSize.y;
+            result.Add(data);
+        }
+
+        return result;
+    }
+
+    public List<RoadCheckPointData> GetRoadCheckPointDatas(Vector2 mapCellDesignSize, Vector2 neoCell)
+    {
+        List<RoadCheckPointData> result = new List<RoadCheckPointData>();
+
+        foreach (var checkpoint in roadCheckpoints)
+        {
+            var obj = checkpoint.GetComponent<RoadCheckpointObject>();
+            var data = new RoadCheckPointData();
+            data.order_id = obj.OrderInPath;
+            data.score = obj.Score;
+            data.rot = checkpoint.Rotation;
+            data.pos = checkpoint.transform.localPosition;
             data.pos.x = (data.pos.x - neoCell.x) / mapCellDesignSize.x;
             data.pos.y = (data.pos.y - neoCell.y) / mapCellDesignSize.y;
             result.Add(data);
@@ -174,4 +272,6 @@ public class MapObjectLayerGenerator : MonoBehaviour
 
 
     bool IsActing => (m_state == MapObjectState.S1_Selecting || m_state == MapObjectState.S2_Drawing);
+    bool IsSelecting => m_state == MapObjectState.S1_Selecting;
+    bool IsDrawing => m_state == MapObjectState.S2_Drawing;
 }

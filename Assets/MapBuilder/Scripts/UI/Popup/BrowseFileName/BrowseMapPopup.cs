@@ -29,7 +29,15 @@ public class BrowseMapPopup : MonoBehaviour
 
     private void Awake()
     {
-        Instance = this;
+        if (Instance == null)
+        {
+            Instance = this;
+            GameObject.DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            GameObject.DestroyImmediate(gameObject);
+        }
     }
 
     private void Start()
@@ -145,6 +153,7 @@ public class BrowseMapPopup : MonoBehaviour
 
     void OnMapSelected(string mapId, bool isDefaultMap)
     {
+        Debug.LogWarning("On Map Selected " + mapId + " is default " + isDefaultMap);
         this.onDefaultMapSelected = isDefaultMap;
         string mapName = inputName.text;
         foreach (var map in allMaps)
@@ -154,11 +163,16 @@ public class BrowseMapPopup : MonoBehaviour
                 mapName = map.map_name;
             }
         }
-
-        Debug.LogError("Selected map id = " + mapId + " map name = " + mapName);
+        foreach (var map in defaultMaps)
+        {
+            if (string.Compare(map.data.map_create_id, mapId) == 0)
+            {
+                mapName = map.data.map_name;
+            }
+        }
+        Debug.LogWarning("Selected map id = " + mapId + " map name = " + mapName);
         inputName.text = mapName;
     }
-
 
     int nMap => MapDataLoader.Instance.nMap;
     List<MapData> allMaps => MapDataLoader.Instance.allMaps;

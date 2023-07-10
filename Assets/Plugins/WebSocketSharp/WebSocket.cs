@@ -1251,15 +1251,15 @@ namespace WebSocketSharp
           return false;
         }
 
-        if (_retryCountForConnect > _maxRetryCountForConnect) {
-          var msg = "An opportunity for reconnecting has been lost.";
-          _logger.Error (msg);
+        // if (_retryCountForConnect > _maxRetryCountForConnect) {
+        //   var msg = "An opportunity for reconnecting has been lost.";
+        //   _logger.Error (msg);
 
-          msg = "An interruption has occurred while attempting to connect.";
-          error (msg, null);
+        //   msg = "An interruption has occurred while attempting to connect.";
+        //   error (msg, null);
 
-          return false;
-        }
+        //   return false;
+        // }
 
         _readyState = WebSocketState.Connecting;
 
@@ -3226,10 +3226,10 @@ namespace WebSocketSharp
         throw new InvalidOperationException (msg);
       }
 
-      if (_retryCountForConnect > _maxRetryCountForConnect) {
-        var msg = "A series of reconnecting has failed.";
-        throw new InvalidOperationException (msg);
-      }
+      // if (_retryCountForConnect > _maxRetryCountForConnect) {
+      //   var msg = "A series of reconnecting has failed.";
+      //   throw new InvalidOperationException (msg);
+      // }
 
       if (connect ())
         open ();
@@ -3276,10 +3276,10 @@ namespace WebSocketSharp
         throw new InvalidOperationException (msg);
       }
 
-      if (_retryCountForConnect > _maxRetryCountForConnect) {
-        var msg = "A series of reconnecting has failed.";
-        throw new InvalidOperationException (msg);
-      }
+      // if (_retryCountForConnect > _maxRetryCountForConnect) {
+      //   var msg = "A series of reconnecting has failed.";
+      //   throw new InvalidOperationException (msg);
+      // }
 
       Func<bool> connector = connect;
       connector.BeginInvoke (

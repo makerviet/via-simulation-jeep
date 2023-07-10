@@ -31,6 +31,7 @@ public class WorldMapBuilder : MonoBehaviour
     [SerializeField] float cellSize = 1.0f;
 
     [SerializeField] Transform car;
+    [SerializeField] RoadGoal roadGoal;
 
     [SerializeField] bool autoLoadMap;
 
@@ -39,6 +40,7 @@ public class WorldMapBuilder : MonoBehaviour
     [SerializeField] Image miniMapCarIcon;
 
     [Header("Debug")]
+    [SerializeField] bool m_IsLoadedMap = false;
     [SerializeField] MapData mapData;
     [SerializeField] List<MapCellData> listCellDatas;
     [SerializeField] List<MapSignData> listSignDatas;
@@ -56,7 +58,7 @@ public class WorldMapBuilder : MonoBehaviour
         }
 
         var savedGamesPath = Application.persistentDataPath + "/";
-        Debug.LogError("DebugPath = " + savedGamesPath);
+        Debug.LogWarning("DebugPath = " + savedGamesPath);
     }
 
     [ContextMenu("Load saved map")]
@@ -114,7 +116,7 @@ public class WorldMapBuilder : MonoBehaviour
         WWW www = new WWW(path);
         yield return www;
         miniMap.texture = www.texture;
-        Debug.LogError("Loaded Icon of map " + path);
+        Debug.LogWarning("Loaded Icon of map " + path);
     }
 
     public void GenMap(MapData mapData)
@@ -131,6 +133,7 @@ public class WorldMapBuilder : MonoBehaviour
     public void GenMap(Vector2Int mapSize, List<MapCellData> cellDatas, Vector2 neoOffset,
         List<MapSignData> signDatas)
     {
+        m_IsLoadedMap = false;
         foreach (var cell in listCells)
         {
             GameObject.Destroy(cell.gameObject);
@@ -151,7 +154,12 @@ public class WorldMapBuilder : MonoBehaviour
             float posRow = neoOffset.y - mapSize.y * 0.5f;
             var posOnRoot = new Vector3(posCol * cellSize, 0, posRow * cellSize);
             transform.position = car.position - posOnRoot;
+
+            roadGoal.gameObject.SetActive(true);
+            roadGoal.transform.position = car.transform.position;
         }
+
+        m_IsLoadedMap = true;
     }
 
     void CreateSignObjs(List<MapSignData> signDatas)
@@ -221,4 +229,9 @@ public class WorldMapBuilder : MonoBehaviour
         }
         return signModels[0];
     }
+
+    public float mapWidth => cellSize* mapData.map_size.x;
+    public float mapHeight => cellSize * mapData.map_size.y;
+    public Vector3 posRoot => root.transform.position;
+    public bool IsLoadedMap => m_IsLoadedMap;
 }

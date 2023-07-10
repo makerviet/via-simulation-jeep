@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5617849417810917839}
   - component: {fileID: 3020911611425532210}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: WorldSignal_S03_No_TurnRight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -63,7 +63,7 @@ GameObject:
   - component: {fileID: 2324442501618102516}
   - component: {fileID: 5602595189095142370}
   - component: {fileID: 2068985736047223200}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Sign
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -157,7 +157,7 @@ GameObject:
   - component: {fileID: 285212599223075886}
   - component: {fileID: 5248320189160334982}
   - component: {fileID: 4124891032629626421}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Cylinder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -251,7 +251,7 @@ GameObject:
   - component: {fileID: 6082694534775908131}
   - component: {fileID: 8845949513725162353}
   - component: {fileID: 2948942736426522952}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Sign_blank
   m_TagString: Untagged
   m_Icon: {fileID: 0}

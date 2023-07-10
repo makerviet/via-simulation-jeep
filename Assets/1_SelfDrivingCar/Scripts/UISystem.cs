@@ -45,7 +45,8 @@ public class UISystem : MonoSingleton<UISystem> {
 	
     void UpdateCarValues()
     {
-        SetMPHValue(carController.CurrentSpeed * carController.MaxSpeed);
+        //SetMPHValue(carController.CurrentSpeed * carController.MaxSpeed);
+        SetMPHValue(carController.CurrentSpeed);
         SetAngleValue(carController.CurrentSteerAngle);
     }
 

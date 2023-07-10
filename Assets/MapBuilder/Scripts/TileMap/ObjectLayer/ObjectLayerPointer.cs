@@ -21,9 +21,10 @@ public class ObjectLayerPointer : MonoBehaviour
     [SerializeField] RectDrag center;
     [SerializeField] Slider rotationSlider;
 
+    [Header("Debug")]
     [SerializeField] State m_state = State.S0_Idle;
 
-    [SerializeField] TrafficSignObject selectingObject;
+    [SerializeField] TrafficSignObject m_SelectingObject;
 
     void Start()
     {
@@ -49,35 +50,36 @@ public class ObjectLayerPointer : MonoBehaviour
 
     void OnRotChanged(float pValue)
     {
-        selectingObject?.UpdateRot(pValue);
+        m_SelectingObject?.UpdateRot(pValue);
     }
 
     public void OnSelected(TrafficSignObject pObject)
     {
-        Debug.LogError("OnSelected obj " + pObject.name);
-        if (selectingObject != null && pObject != selectingObject)
+        Debug.LogWarning("OnSelected obj " + pObject.name);
+        if (m_SelectingObject != null && pObject != m_SelectingObject)
         {
-            selectingObject.OnUnSelect();
+            m_SelectingObject.OnUnSelect();
         }
 
-        Debug.LogError("Setup new obj with rot = " + pObject.Rotation);
-        this.selectingObject = pObject;
+        Debug.LogWarning("Setup new obj with rot = " + pObject.Rotation);
+        this.m_SelectingObject = pObject;
         this.rotationSlider.value = pObject.Rotation;
     }
 
     public void OnUnSelected()
     {
-        if (selectingObject != null)
+        if (m_SelectingObject != null)
         {
-            selectingObject.OnUnSelect();
+            m_SelectingObject.OnUnSelect();
+            m_SelectingObject = null;
         }
     }
 
     void UpdateSelectingObjectPos()
     {
-        if (selectingObject != null)
+        if (m_SelectingObject != null)
         {
-            selectingObject.transform.position = root.position;
+            m_SelectingObject.transform.position = root.position;
         }   
     }
 
@@ -86,7 +88,7 @@ public class ObjectLayerPointer : MonoBehaviour
 
     void OnBeginDrag(int pointerId, Vector2 screenPos, int mouseId)
     {
-        Debug.LogError("On Begin Drag " + screenPos);
+        Debug.LogWarning("On Begin Drag " + screenPos);
         if (mouseId != 0)
         {
             return;
@@ -117,7 +119,7 @@ public class ObjectLayerPointer : MonoBehaviour
 
     void OnBeginDragX(int pointerId, Vector2 screenPos, int mouseId)
     {
-        Debug.LogError("On Begin Drag " + screenPos);
+        Debug.LogWarning("On Begin Drag " + screenPos);
         if (mouseId != 0)
         {
             return;
@@ -151,7 +153,7 @@ public class ObjectLayerPointer : MonoBehaviour
 
     void OnBeginDragY(int pointerId, Vector2 screenPos, int mouseId)
     {
-        Debug.LogError("On Begin Drag " + screenPos);
+        Debug.LogWarning("On Begin Drag " + screenPos);
         if (mouseId != 0)
         {
             return;
@@ -206,4 +208,7 @@ public class ObjectLayerPointer : MonoBehaviour
             return m_canvas;
         }
     }
+
+    public bool OnSelecting => m_SelectingObject != null;
+    public TrafficSignObject SelectingObject => m_SelectingObject;
 }

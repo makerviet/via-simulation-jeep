@@ -54,11 +54,45 @@ public class MapIcon : MonoBehaviour
     IEnumerator LoadTexture()
     {
         yield return null;
-        string path = string.Format("file://{0}", MapDataLoader.PathOfMap(mapData.map_name));
+        if (mapData.texture != null)
+        {
+            rawImage.texture = mapData.texture;
+            yield break;
+        }
+        string pathOfMap = MapDataLoader.PathOfMap(mapData.map_name);
+
+        bool exist = false;
+        try
+        {
+            exist = System.IO.File.Exists(pathOfMap);
+        }
+        catch (Exception ex)
+        {
+        }
+        
+        while (!exist)
+        {
+            yield return null;
+            try
+            {
+                exist = System.IO.File.Exists(pathOfMap);
+            }
+            catch (Exception ex)
+            {
+            }
+        }
+
+        if (mapData.texture != null)
+        {
+            rawImage.texture = mapData.texture;
+            yield break;
+        }
+        string path = string.Format("file://{0}", pathOfMap);
         WWW www = new WWW(path);
         yield return www;
         rawImage.texture = www.texture;
-        Debug.LogError("Loaded Icon of map " + path);
+        mapData.texture = rawImage.texture;
+        Debug.LogWarning("Loaded Icon of map " + path);
     }
 
     void OnButtonClicked()

@@ -258,7 +258,7 @@ namespace UnityStandardAssets.ImageEffects
             }
             else
             {
-                Debug.LogError("No valid adaptive tonemapper type found!");
+                Debug.LogWarning("No valid adaptive tonemapper type found!");
                 Graphics.Blit(source, destination); // at least we get the TransformToLDR effect
             }
 

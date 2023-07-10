@@ -12,7 +12,7 @@ public class TileSetCell : MonoBehaviour
         Sign = 1
     }
 
-    Action<int> OnSelectedListener;
+    Action<TileSetCell> OnSelectedListener;
 
     Button m_button;
     Image m_image;
@@ -72,7 +72,7 @@ public class TileSetCell : MonoBehaviour
         button.onClick.AddListener(OnCellSelected);
     }
 
-    public void AddSelectedListener(Action<int> pListener)
+    public void AddSelectedListener(Action<TileSetCell> pListener)
     {
         OnSelectedListener -= pListener;
         OnSelectedListener += pListener;
@@ -81,14 +81,15 @@ public class TileSetCell : MonoBehaviour
 
     void OnCellSelected()
     {
-        if (type == CellType.TileMap)
-        {
-            OnSelectedListener?.Invoke((int)cellId);
-        }
-        else
-        {
-            OnSelectedListener?.Invoke((int)signId);
-        }
+        //if (type == CellType.TileMap)
+        //{
+        //    OnSelectedListener?.Invoke((int)cellId);
+        //}
+        //else
+        //{
+        //    OnSelectedListener?.Invoke((int)signId);
+        //}
+        OnSelectedListener?.Invoke(this);
     }
 
     public void SetSelectState(bool isSelect)
@@ -96,5 +97,5 @@ public class TileSetCell : MonoBehaviour
         //outline.enabled = isSelect;
     }
 
-
+    public int TileId => (type == CellType.TileMap) ? (int)cellId : (int)signId;
 }

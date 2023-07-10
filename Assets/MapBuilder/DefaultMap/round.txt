@@ -1,1 +1,119 @@
-{"map_name":"round","bg_id":0,"map_size":{"x":24,"y":20},"cell_datas":[{"id_inmap":129,"tile_id":0,"rot":90},{"id_inmap":130,"tile_id":0,"rot":90},{"id_inmap":131,"tile_id":0,"rot":90},{"id_inmap":132,"tile_id":0,"rot":90},{"id_inmap":133,"tile_id":0,"rot":90},{"id_inmap":134,"tile_id":0,"rot":90},{"id_inmap":150,"tile_id":3,"rot":180},{"id_inmap":161,"tile_id":3,"rot":270},{"id_inmap":221,"tile_id":0,"rot":0},{"id_inmap":234,"tile_id":0,"rot":0},{"id_inmap":245,"tile_id":0,"rot":0},{"id_inmap":258,"tile_id":0,"rot":0},{"id_inmap":318,"tile_id":3,"rot":90},{"id_inmap":329,"tile_id":3,"rot":0},{"id_inmap":345,"tile_id":0,"rot":90},{"id_inmap":346,"tile_id":0,"rot":90},{"id_inmap":347,"tile_id":0,"rot":90},{"id_inmap":348,"tile_id":0,"rot":90},{"id_inmap":349,"tile_id":0,"rot":90},{"id_inmap":350,"tile_id":0,"rot":90}],"anchor_offset":{"x":18.0,"y":8.0}}
+{
+  "map_name": "round",
+  "bg_id": 0,
+  "map_size": {
+    "x": 24,
+    "y": 20
+  },
+  "cell_datas": [
+    {
+      "id_inmap": 129,
+      "tile_id": 0,
+      "rot": 90
+    },
+    {
+      "id_inmap": 130,
+      "tile_id": 0,
+      "rot": 90
+    },
+    {
+      "id_inmap": 131,
+      "tile_id": 0,
+      "rot": 90
+    },
+    {
+      "id_inmap": 132,
+      "tile_id": 0,
+      "rot": 90
+    },
+    {
+      "id_inmap": 133,
+      "tile_id": 0,
+      "rot": 90
+    },
+    {
+      "id_inmap": 134,
+      "tile_id": 0,
+      "rot": 90
+    },
+    {
+      "id_inmap": 150,
+      "tile_id": 3,
+      "rot": 180
+    },
+    {
+      "id_inmap": 161,
+      "tile_id": 3,
+      "rot": 270
+    },
+    {
+      "id_inmap": 221,
+      "tile_id": 0,
+      "rot": 0
+    },
+    {
+      "id_inmap": 234,
+      "tile_id": 0,
+      "rot": 0
+    },
+    {
+      "id_inmap": 245,
+      "tile_id": 0,
+      "rot": 0
+    },
+    {
+      "id_inmap": 258,
+      "tile_id": 0,
+      "rot": 0
+    },
+    {
+      "id_inmap": 318,
+      "tile_id": 3,
+      "rot": 90
+    },
+    {
+      "id_inmap": 329,
+      "tile_id": 3,
+      "rot": 0
+    },
+    {
+      "id_inmap": 345,
+      "tile_id": 0,
+      "rot": 90
+    },
+    {
+      "id_inmap": 346,
+      "tile_id": 0,
+      "rot": 90
+    },
+    {
+      "id_inmap": 347,
+      "tile_id": 0,
+      "rot": 90
+    },
+    {
+      "id_inmap": 348,
+      "tile_id": 0,
+      "rot": 90
+    },
+    {
+      "id_inmap": 349,
+      "tile_id": 0,
+      "rot": 90
+    },
+    {
+      "id_inmap": 350,
+      "tile_id": 0,
+      "rot": 90
+    }
+  ],
+  "anchor_offset": {
+    "x": 0,
+    "y": 0
+  },
+  "car_pos": {
+    "x": 18,
+    "y": 9
+  },
+  "sign_obj_datas": []
+}

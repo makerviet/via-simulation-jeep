@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -25,8 +26,19 @@ public class MapDataLoader : MonoBehaviour
     [SerializeField] MapAllData mapAllDatas;
     [SerializeField] List<MapAsset> defaultMapAssets = new List<MapAsset>();
 
+    public static List<MapAsset> fixedMapAssets => (Instance != null)? Instance.defaultMapAssets : new List<MapAsset>();
     //[Header("Debug")]
     //[SerializeField] List<MapData> defaultMapDatas = new List<MapData>();
+
+    public Texture currentMapdataTexture;
+
+    [Header("Gen Map texture")]
+    [SerializeField] WorldMapBuilder tempWorldMapBuilder;
+    [SerializeField] RenderTexture tempMapRenderTexture;
+
+    [Header("Debug")]
+    [SerializeField] MapData currentMapdata;
+    
 
     private void Awake()
     {
@@ -55,6 +67,64 @@ public class MapDataLoader : MonoBehaviour
         {
             string jsonData = asset.jsonData.text;
             asset.data = JsonUtility.FromJson<MapData>(jsonData);
+        }
+
+        countCheckMapTexture = 0;
+        CheckMapTexture();
+    }
+
+    int countCheckMapTexture = 0;
+    void CheckMapTexture()
+    {
+        MapData noneTextureMapData = null;
+        string texturePath = "";
+        for (int i = countCheckMapTexture; i < mapAllDatas.map_datas.Count; i++)
+        {
+            var mapData = mapAllDatas.map_datas[i];
+            if (!string.IsNullOrEmpty(mapData.map_name))
+            {
+                string path = PathOfMap(mapData.map_name);
+                if (!string.IsNullOrEmpty(path))
+                {
+                    bool exist = false;
+                    try
+                    {
+                        if (System.IO.File.Exists(path))
+                        {
+                            exist = true;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                    }
+
+                    if (!exist)
+                    {
+                        countCheckMapTexture = i + 1;
+                        texturePath = path;
+                        noneTextureMapData = mapData;
+                        break;
+                    }
+                }
+            }
+        }
+        if (noneTextureMapData != null)
+        {
+            Debug.LogWarning("Gen texture for map[ " + (countCheckMapTexture - 1) + "], name = " + noneTextureMapData.map_name);
+            GenMapTexture(noneTextureMapData, (texture) =>
+            {
+                Debug.LogWarning("Save Texture for map " + noneTextureMapData.map_name);
+                try
+                {
+                    noneTextureMapData.texture = texture;
+                    SaveTextureToJPG(texture, texturePath);
+                }
+                catch (System.Exception ex)
+                {
+                }
+
+                CheckMapTexture();
+            });
         }
     }
 
@@ -91,16 +161,23 @@ public class MapDataLoader : MonoBehaviour
         {
             mapAllDatas.map_datas[id] = mapdata;
         }
+        mapdata.texture = mapTexture;
 
-        string dirPath = string.Format("{0}{1}", Application.persistentDataPath, "/map/");
-        if (!Directory.Exists(dirPath))
+        try
         {
-            Directory.CreateDirectory(dirPath);
-        }
-        string texturePath = string.Format("{0}{1}.jpg", dirPath, mapdata.map_name);
-        SaveTextureToJPG(mapTexture, texturePath);
+            string dirPath = string.Format("{0}{1}", Application.persistentDataPath, "/map/");
+            if (!Directory.Exists(dirPath))
+            {
+                Directory.CreateDirectory(dirPath);
+            }
+            string texturePath = string.Format("{0}{1}.jpg", dirPath, mapdata.map_name);
+            SaveTextureToJPG(mapTexture, texturePath);
 
-        SaveData();
+            SaveData();
+        }
+        catch (Exception ex)
+        {
+        }
     }
 
     public static string PathOfMap(string mapName)
@@ -109,21 +186,69 @@ public class MapDataLoader : MonoBehaviour
         return texturePath;
     }
 
-    static void SaveTextureToJPG(Texture2D texure, string fullPath)
+    public static void SaveTextureToJPG(Texture2D texure, string fullPath)
     {
-        byte[] bytes = texure.EncodeToJPG();
-        File.WriteAllBytes(fullPath, bytes);
-        Debug.LogError("Save success to " + fullPath);
+        try
+        {
+            byte[] bytes = texure.EncodeToJPG();
+            File.WriteAllBytes(fullPath, bytes);
+            Debug.LogWarning("Save success to " + fullPath);
+        }
+        catch (Exception ex)
+        {
+        }
     }
 
-    public MapData currentMapdata;
-    public Texture currentMapdataTexture;
+
+    public static void GenMapTexture(MapData mapData, System.Action<Texture2D> callback)
+    {
+        if (Instance != null)
+        {
+            Instance.DoGenMapTexture(mapData, callback);
+        }
+    }
+
+    void DoGenMapTexture(MapData mapData, System.Action<Texture2D> callback)
+    {
+        StartCoroutine(DoIEGenMapTexture(mapData, callback));
+    }
+
+    IEnumerator DoIEGenMapTexture(MapData mapData, System.Action<Texture2D> callback)
+    {
+        tempWorldMapBuilder.gameObject.SetActive(true);
+        yield return null;
+        tempWorldMapBuilder.GenMap(mapData);
+        yield return null;
+        yield return null;
+        var texture2D = ToTexture2D(tempMapRenderTexture);
+        yield return null;
+        tempWorldMapBuilder.gameObject.SetActive(false);
+        mapData.texture = texture2D;
+        callback?.Invoke(texture2D);
+    }
+
+    Texture2D ToTexture2D(RenderTexture rTex)
+    {
+        Texture2D tex = new Texture2D(rTex.width, rTex.height, TextureFormat.RGB24, false);
+        RenderTexture.active = rTex;
+        tex.ReadPixels(new Rect(0, 0, rTex.width, rTex.height), 0, 0);
+        tex.Apply();
+        return tex;
+    }
+
     public static MapData instanceMapData => Instance.currentMapdata;
 
     public static void SetInstanceMapData(MapData pMapData, Texture pMapTexture)
     {
         Instance.currentMapdata = pMapData;
-        Instance.currentMapdataTexture = pMapTexture;
+        if (pMapTexture != null)
+        {
+            Instance.currentMapdataTexture = pMapTexture;
+        }
+        else
+        {
+            Instance.currentMapdataTexture = pMapData.texture;
+        }
     }
 
     public static Texture TextureOfDefaultMap(string mapId)
@@ -162,7 +287,10 @@ public class MapDataLoader : MonoBehaviour
         return null;
     }
 
-
+    public static string JsonOfCurrentMap()
+    {
+        return JsonUtility.ToJson(Instance.currentMapdata);
+    }
 
 
 

@@ -657,7 +657,7 @@ public class SimpleFileBrowser : MonoBehaviour
 			}
 			catch( Exception e )
 			{
-				Debug.LogException( e );
+				Debug.LogWarning( e );
 				return;
 			}
 		}
@@ -721,7 +721,7 @@ public class SimpleFileBrowser : MonoBehaviour
 	{
 		if( instance.gameObject.activeSelf )
 		{
-			Debug.LogError( "Error: Multiple dialogs are not allowed!" );
+			Debug.LogWarning( "Error: Multiple dialogs are not allowed!" );
 			return false;
 		}
 		
@@ -749,7 +749,7 @@ public class SimpleFileBrowser : MonoBehaviour
 	{
 		if( instance.gameObject.activeSelf )
 		{
-			Debug.LogError( "Error: Multiple dialogs are not allowed!" );
+			Debug.LogWarning( "Error: Multiple dialogs are not allowed!" );
 			return false;
 		}
 
@@ -776,7 +776,7 @@ public class SimpleFileBrowser : MonoBehaviour
 	{
 		if( instance.gameObject.activeSelf )
 		{
-			Debug.LogError( "Error: Multiple dialogs are not allowed!" );
+			Debug.LogWarning( "Error: Multiple dialogs are not allowed!" );
 			yield break;
 		}
 
@@ -791,7 +791,7 @@ public class SimpleFileBrowser : MonoBehaviour
 	{
 		if( instance.gameObject.activeSelf )
 		{
-			Debug.LogError( "Error: Multiple dialogs are not allowed!" );
+			Debug.LogWarning( "Error: Multiple dialogs are not allowed!" );
 			yield break;
 		}
 
